@@ -1,0 +1,756 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>3D Please — Cork City 3D Printing</title>
+<meta name="description" content="Local 3D printing in Cork City. Prototypes, replacement parts and custom objects. Next-day collection. PLA, PETG and TPU available.">
+<meta name="keywords" content="3D printing Cork, 3D print Cork City, prototype printing Cork, FDM printing Ireland">
+<meta property="og:title" content="3D Please — Cork City 3D Printing">
+<meta property="og:description" content="Local 3D printing in Cork City. Send your file, collect next day.">
+<meta property="og:url" content="https://3dplease.ie">
+<meta property="og:type" content="website">
+<meta property="og:image" content="https://3dplease.ie/og.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="3D Please — Cork City, next-day 3D printing">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="canonical" href="https://3dplease.ie">
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' fill='%2318171a'/%3E%3Ctext x='16' y='22' font-family='-apple-system,BlinkMacSystemFont,system-ui,sans-serif' font-weight='900' font-size='14' fill='%23f6f3ed' text-anchor='middle'%3E3D%3C/text%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-JWLKQWBCTT"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-JWLKQWBCTT');
+</script>
+<style>
+:root {
+  --ink: #18171a;
+  --ink-soft: #2a2a2e;
+  --paper: #f6f3ed;
+  --paper-warm: #efeae0;
+  --paper-deep: #e6dfd1;
+  --border: #d9d2c2;
+  --border-soft: #e8e2d4;
+  --muted: #625c50;
+  --muted-light: #726c5e;
+  --muted-on-dark: #a8a294;
+  --accent: #c54a1a;
+  --accent-deep: #a13c14;
+  --accent-soft: #f4d4c4;
+  --sans: 'Geist', -apple-system, BlinkMacSystemFont, sans-serif;
+  --mono: 'JetBrains Mono', 'IBM Plex Mono', monospace;
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body {
+  background: var(--paper);
+  color: var(--ink);
+  font-family: var(--sans);
+  font-size: 15px;
+  line-height: 1.55;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* NAV */
+nav {
+  position: sticky; top: 0; z-index: 100;
+  background: rgba(246, 243, 237, 0.92);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border-bottom: 1px solid var(--border-soft);
+  padding: 0 48px;
+  display: flex; align-items: center; height: 56px; gap: 36px;
+}
+.nav-brand {
+  display: inline-flex; align-items: center; gap: 6px;
+  text-decoration: none; margin-right: auto;
+  height: 28px;
+}
+.logo-img {
+  height: 28px; width: auto;
+  display: block;
+}
+.logo-img-footer {
+  height: 32px;
+}
+.nav-link {
+  font-size: 13px; color: var(--muted); text-decoration: none;
+  transition: color 0.15s; font-weight: 400;
+}
+.nav-link:hover { color: var(--ink); }
+.nav-cta {
+  font-family: var(--sans); font-size: 13px; font-weight: 500;
+  background: var(--ink); color: var(--paper);
+  padding: 8px 18px; text-decoration: none;
+  transition: background 0.15s; border-radius: 999px;
+}
+.nav-cta:hover { background: var(--accent); }
+
+/* HERO */
+.hero {
+  padding: 80px 64px 100px;
+  display: grid; grid-template-columns: 1.15fr 0.85fr;
+  gap: 80px;
+  border-bottom: 1px solid var(--border-soft);
+  position: relative;
+}
+.hero::before {
+  content: '';
+  position: absolute;
+  top: 0; right: 0; bottom: 0;
+  width: 50%;
+  background: linear-gradient(180deg, var(--paper-warm) 0%, var(--paper) 100%);
+  z-index: 0;
+  opacity: 0.6;
+}
+.hero-left, .hero-right {
+  position: relative; z-index: 1;
+}
+.hero-left {
+  display: flex; flex-direction: column; justify-content: center;
+}
+.hero-tag {
+  font-family: var(--mono); font-size: 11px; color: var(--accent);
+  letter-spacing: 0.08em; text-transform: uppercase;
+  margin-bottom: 32px;
+  display: inline-flex; align-items: center; gap: 10px;
+  background: var(--accent-soft);
+  padding: 6px 12px;
+  border-radius: 999px;
+  width: fit-content;
+}
+.hero-tag::before {
+  content: ''; width: 6px; height: 6px; background: var(--accent);
+  border-radius: 50%;
+}
+.hero-title {
+  font-family: var(--sans); font-weight: 600; font-size: 68px;
+  line-height: 1.0; letter-spacing: -0.04em;
+  margin-bottom: 28px;
+}
+.hero-title em {
+  font-style: normal; color: var(--accent);
+  font-weight: 600;
+}
+.hero-body {
+  font-size: 17px; line-height: 1.65; color: var(--muted);
+  font-weight: 400; max-width: 460px; margin-bottom: 40px;
+}
+.hero-cta-row {
+  display: flex; gap: 12px; align-items: center;
+  margin-bottom: 56px; flex-wrap: wrap;
+}
+.btn-primary-hero {
+  font-family: var(--sans); font-size: 14px; font-weight: 500;
+  background: var(--ink); color: var(--paper);
+  padding: 14px 24px; text-decoration: none;
+  transition: background 0.15s; border-radius: 999px;
+  display: inline-flex; align-items: center; gap: 8px;
+}
+.btn-primary-hero:hover { background: var(--accent); }
+.btn-secondary-hero {
+  font-family: var(--sans); font-size: 14px; font-weight: 500;
+  background: transparent; color: var(--ink);
+  padding: 13px 22px; text-decoration: none;
+  transition: all 0.15s; border-radius: 999px;
+  border: 1px solid var(--border);
+  display: inline-flex; align-items: center; gap: 8px;
+}
+.btn-secondary-hero:hover { background: var(--paper-warm); border-color: var(--ink); }
+
+.hero-stats {
+  display: grid; grid-template-columns: repeat(3, 1fr);
+  gap: 1px;
+  background: var(--border-soft);
+  border: 1px solid var(--border-soft);
+  border-radius: 16px;
+  overflow: hidden;
+}
+.stat {
+  padding: 20px 24px;
+  background: var(--paper);
+}
+.stat-label {
+  font-family: var(--mono); font-size: 10px; color: var(--muted-light);
+  text-transform: uppercase; letter-spacing: 0.08em;
+  display: block; margin-bottom: 6px;
+}
+.stat-value { font-size: 16px; font-weight: 500; color: var(--ink); }
+
+/* HERO RIGHT — order card */
+.hero-right {
+  display: flex; flex-direction: column; justify-content: center;
+}
+.order-card {
+  background: var(--paper);
+  border: 1px solid var(--border-soft);
+  padding: 32px;
+  border-radius: 20px;
+  box-shadow: 0 1px 2px rgba(24,23,26,0.04), 0 8px 24px rgba(24,23,26,0.04);
+}
+.order-title {
+  font-family: var(--mono); font-size: 11px; color: var(--muted);
+  text-transform: uppercase; letter-spacing: 0.1em;
+  margin-bottom: 24px;
+  display: flex; align-items: center; gap: 8px;
+}
+.dot {
+  width: 8px; height: 8px; background: var(--accent);
+  border-radius: 50%;
+  box-shadow: 0 0 0 3px var(--accent-soft);
+}
+.field-group { margin-bottom: 16px; }
+.field-group label {
+  font-family: var(--sans); font-size: 12px; color: var(--ink);
+  font-weight: 500;
+  display: block; margin-bottom: 6px;
+}
+.field-group input,
+.field-group select,
+.field-group textarea {
+  width: 100%; padding: 11px 14px;
+  border: 1px solid var(--border); background: var(--paper);
+  font-family: var(--sans); font-size: 14px; color: var(--ink);
+  outline: none; transition: all 0.15s;
+  border-radius: 10px;
+  -webkit-appearance: none; resize: none;
+}
+.field-group input::placeholder,
+.field-group textarea::placeholder { color: var(--muted-light); }
+.field-group input:focus,
+.field-group select:focus,
+.field-group textarea:focus {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px var(--accent-soft);
+}
+.field-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.btn-submit {
+  width: 100%; padding: 13px;
+  background: var(--ink); color: var(--paper);
+  border: none; cursor: pointer;
+  font-family: var(--sans); font-size: 14px; font-weight: 500;
+  transition: background 0.15s;
+  margin-top: 8px;
+  border-radius: 10px;
+  display: flex; align-items: center; justify-content: center; gap: 6px;
+}
+.btn-submit:hover { background: var(--accent); }
+.btn-submit:disabled { opacity: 0.5; cursor: not-allowed; }
+.or-divider {
+  text-align: center; margin: 16px 0;
+  font-family: var(--mono); font-size: 11px; color: var(--muted-light);
+  position: relative;
+}
+.or-divider::before, .or-divider::after {
+  content: ''; position: absolute; top: 50%;
+  width: calc(50% - 20px); height: 1px; background: var(--border-soft);
+}
+.or-divider::before { left: 0; }
+.or-divider::after { right: 0; }
+.btn-whatsapp {
+  width: 100%; padding: 12px;
+  background: var(--paper-warm); color: var(--ink);
+  border: 1px solid var(--border-soft); cursor: pointer;
+  font-family: var(--sans); font-size: 14px; font-weight: 500;
+  text-decoration: none; display: flex; align-items: center;
+  justify-content: center; gap: 8px; transition: all 0.15s;
+  border-radius: 10px;
+}
+.btn-whatsapp:hover { background: var(--paper-deep); }
+
+.success-state {
+  text-align: center; padding: 48px 20px; display: none;
+}
+.success-icon {
+  width: 48px; height: 48px; margin: 0 auto 18px;
+  background: var(--accent-soft); border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 22px; color: var(--accent);
+}
+.success-title { font-size: 18px; font-weight: 600; margin-bottom: 8px; }
+.success-body { font-size: 14px; color: var(--muted); line-height: 1.6; }
+
+/* NOTICE — soft and integrated */
+.notice {
+  background: var(--paper-warm);
+  border-bottom: 1px solid var(--border-soft);
+  padding: 20px 64px;
+  display: flex; align-items: center; gap: 16px;
+}
+.notice-icon {
+  font-family: var(--mono); font-size: 10px; color: var(--accent);
+  background: var(--accent-soft); padding: 5px 10px;
+  white-space: nowrap; text-transform: uppercase; letter-spacing: 0.06em;
+  border-radius: 999px; font-weight: 500;
+}
+.notice-text { font-size: 13px; color: var(--muted); line-height: 1.6; }
+.notice-text strong { color: var(--ink); font-weight: 600; }
+
+/* SECTIONS */
+.section { border-bottom: 1px solid var(--border-soft); }
+.section-head {
+  padding: 64px 64px 32px;
+  display: flex; align-items: baseline; justify-content: space-between;
+  gap: 40px;
+}
+.section-head-left { display: flex; align-items: baseline; gap: 16px; }
+.section-num {
+  font-family: var(--mono); font-size: 11px; color: var(--muted-light);
+  letter-spacing: 0.04em;
+}
+.section-label {
+  font-family: var(--sans); font-size: 28px; font-weight: 600;
+  letter-spacing: -0.02em; color: var(--ink);
+}
+.section-sub {
+  font-size: 14px; color: var(--muted); max-width: 320px;
+  text-align: right;
+}
+
+/* HOW IT WORKS */
+.steps {
+  display: grid; grid-template-columns: repeat(3, 1fr);
+  gap: 20px;
+  padding: 0 64px 64px;
+}
+.step {
+  background: var(--paper);
+  border: 1px solid var(--border-soft);
+  border-radius: 16px;
+  padding: 32px;
+  transition: all 0.2s;
+}
+.step:hover {
+  border-color: var(--border);
+  transform: translateY(-2px);
+}
+.step-num {
+  font-family: var(--mono); font-size: 11px; color: var(--accent);
+  display: inline-block; margin-bottom: 24px;
+  background: var(--accent-soft);
+  padding: 4px 10px;
+  border-radius: 999px;
+  letter-spacing: 0.04em;
+}
+.step-title { font-size: 18px; font-weight: 600; margin-bottom: 10px; line-height: 1.3; }
+.step-body { font-size: 14px; color: var(--muted); line-height: 1.65; }
+
+/* PRICING */
+.pricing-grid {
+  display: grid; grid-template-columns: repeat(3, 1fr);
+  gap: 20px;
+  padding: 0 64px 32px;
+}
+.price-card {
+  background: var(--paper);
+  border: 1px solid var(--border-soft);
+  border-radius: 16px;
+  padding: 36px 32px;
+  position: relative;
+  transition: all 0.2s;
+}
+.price-card:hover { border-color: var(--border); transform: translateY(-2px); }
+.price-card.featured {
+  background: var(--ink);
+  color: var(--paper);
+  border-color: var(--ink);
+}
+.price-card.featured:hover { transform: translateY(-2px); }
+.price-card.featured .price-name,
+.price-card.featured .price-amount { color: var(--paper); }
+.price-card.featured .price-sub { color: var(--muted-on-dark); }
+.price-card.featured .price-features li { color: var(--muted-on-dark); border-color: rgba(255,255,255,0.1); }
+.price-card.featured .price-features li::before { color: var(--accent); }
+.price-card.featured .price-divider { border-color: rgba(255,255,255,0.1); }
+.price-badge {
+  font-family: var(--mono); font-size: 10px;
+  text-transform: uppercase; letter-spacing: 0.08em;
+  display: inline-block; margin-bottom: 16px;
+  padding: 4px 10px; border-radius: 999px;
+  background: var(--paper-warm); color: var(--muted);
+}
+.price-card.featured .price-badge {
+  background: var(--accent); color: var(--paper);
+}
+.price-name { font-size: 22px; font-weight: 600; margin-bottom: 4px; }
+.price-amount {
+  font-size: 44px; font-weight: 600; letter-spacing: -0.04em;
+  margin-bottom: 4px; display: flex; align-items: baseline; gap: 2px;
+  line-height: 1;
+}
+.price-amount sup { font-size: 20px; font-weight: 500; top: -8px; }
+.price-amount .range { font-size: 20px; color: var(--muted); font-weight: 400; }
+.price-card.featured .price-amount .range { color: var(--muted-on-dark); }
+.price-sub {
+  font-family: var(--mono); font-size: 11px; color: var(--muted);
+  margin-bottom: 28px; display: block; margin-top: 8px;
+}
+.price-divider { border: none; border-top: 1px solid var(--border-soft); margin-bottom: 20px; }
+.price-features { list-style: none; }
+.price-features li {
+  font-size: 14px; color: var(--muted);
+  padding: 8px 0; border-bottom: 1px solid var(--border-soft);
+  display: flex; align-items: center; gap: 10px;
+}
+.price-features li:last-child { border-bottom: none; }
+.price-features li::before {
+  content: '✓'; color: var(--accent); font-size: 12px; flex-shrink: 0;
+  font-weight: 600;
+}
+
+/* MATERIALS */
+.materials-grid {
+  display: grid; grid-template-columns: repeat(4, 1fr);
+  gap: 16px;
+  padding: 0 64px 64px;
+}
+.mat-cell {
+  background: var(--paper);
+  border: 1px solid var(--border-soft);
+  border-radius: 14px;
+  padding: 24px;
+  transition: all 0.2s;
+}
+.mat-cell:hover { border-color: var(--border); }
+.mat-name { font-size: 20px; font-weight: 600; margin-bottom: 6px; }
+.mat-best {
+  font-family: var(--mono); font-size: 10px; text-transform: uppercase;
+  letter-spacing: 0.06em; color: var(--accent);
+  display: block; margin-bottom: 14px;
+}
+.mat-desc { font-size: 13px; color: var(--muted); line-height: 1.6; margin-bottom: 18px; }
+.mat-tag {
+  font-family: var(--mono); font-size: 11px; color: var(--ink);
+  background: var(--paper-warm); padding: 4px 10px;
+  display: inline-block; border-radius: 999px; font-weight: 500;
+}
+
+/* FOOTER */
+footer {
+  background: var(--paper-warm);
+  padding: 56px 64px 32px;
+  border-top: 1px solid var(--border-soft);
+}
+.footer-grid {
+  display: grid; grid-template-columns: 1.5fr 1fr 1fr;
+  gap: 48px; margin-bottom: 40px;
+}
+.footer-brand-logo {
+  display: inline-flex; align-items: center; gap: 6px;
+  text-decoration: none; margin-bottom: 16px;
+  height: 28px;
+}
+.footer-tagline { font-size: 14px; color: var(--muted); line-height: 1.65; max-width: 320px; margin-top: 16px; }
+.footer-col-title {
+  font-family: var(--mono); font-size: 10px; color: var(--muted);
+  text-transform: uppercase; letter-spacing: 0.1em;
+  margin-bottom: 16px; display: block;
+}
+.footer-links { list-style: none; display: flex; flex-direction: column; gap: 10px; }
+.footer-links a {
+  font-size: 14px; color: var(--ink); text-decoration: none;
+  transition: color 0.15s;
+}
+.footer-links a:hover { color: var(--accent); }
+.footer-bottom {
+  border-top: 1px solid var(--border-soft);
+  padding-top: 24px;
+  display: flex; justify-content: space-between; align-items: center;
+}
+.footer-copy { font-family: var(--mono); font-size: 11px; color: var(--muted); }
+
+/* RESPONSIVE */
+@media (max-width: 900px) {
+  .hero { grid-template-columns: 1fr; gap: 48px; padding: 48px 24px 60px; }
+  .hero::before { display: none; }
+  .hero-title { font-size: 48px; }
+  nav { padding: 0 24px; gap: 16px; }
+  .nav-link { display: none; }
+  .notice, .section-head, footer { padding-left: 24px; padding-right: 24px; }
+  .steps, .pricing-grid, .materials-grid { padding-left: 24px; padding-right: 24px; }
+  .steps, .pricing-grid { grid-template-columns: 1fr; }
+  .materials-grid { grid-template-columns: 1fr 1fr; }
+  .section-head { flex-direction: column; gap: 12px; padding-top: 48px; }
+  .section-sub { text-align: left; }
+  .footer-grid { grid-template-columns: 1fr; gap: 32px; }
+  .footer-bottom { flex-direction: column; gap: 12px; }
+  .hero-stats { grid-template-columns: 1fr; }
+  .field-row { grid-template-columns: 1fr; }
+  .order-card { padding: 24px; }
+}
+</style>
+</head>
+<body>
+
+<nav>
+  <a class="nav-brand" href="/" aria-label="3D Please — home">
+    <img src="/logo.png" width="560" height="144" alt="3D Please" class="logo-img">
+  </a>
+  <a class="nav-link" href="#how">How it works</a>
+  <a class="nav-link" href="#pricing">Pricing</a>
+  <a class="nav-link" href="#materials">Materials</a>
+  <a class="nav-cta" href="#order">Get a quote</a>
+</nav>
+
+<section class="hero">
+  <div class="hero-left">
+    <div class="hero-tag">Cork City · FDM Printing</div>
+    <h1 class="hero-title">Parts made<br>in Cork.<br><em>Next day.</em></h1>
+    <p class="hero-body">
+      Local 3D printing for prototypes, replacement parts, and custom objects. 
+      Send a file, collect in Cork City. No minimums. No delays. No nonsense.
+    </p>
+    <div class="hero-cta-row">
+      <a href="#order" class="btn-primary-hero">Get a quote →</a>
+      <a href="#pricing" class="btn-secondary-hero">See pricing</a>
+    </div>
+    <div class="hero-stats">
+      <div class="stat">
+        <span class="stat-label">Turnaround</span>
+        <span class="stat-value">Next day</span>
+      </div>
+      <div class="stat">
+        <span class="stat-label">Starting from</span>
+        <span class="stat-value">€12.00</span>
+      </div>
+      <div class="stat">
+        <span class="stat-label">Collection</span>
+        <span class="stat-value">Cork City</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="hero-right" id="order">
+    <div class="order-card" id="orderCard">
+      <div class="order-title"><span class="dot"></span>Request a quote</div>
+      <form id="quoteForm" action="https://formspree.io/f/mykoaadd" method="POST">
+        <input type="hidden" name="_subject" value="New quote request — 3D Please">
+        <div class="field-group">
+          <label for="f-description">Describe your part</label>
+          <textarea id="f-description" name="description" rows="3" placeholder="e.g. A bracket for mounting a shelf, roughly 60×40mm" required></textarea>
+        </div>
+        <div class="field-row">
+          <div class="field-group">
+            <label for="f-material">Material</label>
+            <select id="f-material" name="material">
+              <option>PLA — standard</option>
+              <option>PETG — stronger</option>
+              <option>TPU — flexible</option>
+              <option>Not sure</option>
+            </select>
+          </div>
+          <div class="field-group">
+            <label for="f-urgency">When?</label>
+            <select id="f-urgency" name="urgency">
+              <option>Next day (+ €5)</option>
+              <option>2–3 days (standard)</option>
+              <option>Not urgent</option>
+            </select>
+          </div>
+        </div>
+        <div class="field-group">
+          <label for="f-name">Your name</label>
+          <input id="f-name" type="text" name="name" autocomplete="name" placeholder="Seán Murphy" required>
+        </div>
+        <div class="field-group">
+          <label for="f-contact">WhatsApp or Email</label>
+          <input id="f-contact" type="text" name="contact" placeholder="For quote and collection details" required>
+        </div>
+        <button class="btn-submit" type="submit">Send quote request →</button>
+      </form>
+      <div class="or-divider">or message us directly</div>
+      <a class="btn-whatsapp" href="https://wa.me/353832059510?text=Hi%2C%20I%27d%20like%20a%203D%20print%20quote" target="_blank" rel="noopener">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="#25D366" aria-hidden="true" focusable="false"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+        Message on WhatsApp
+      </a>
+    </div>
+    <div class="success-state" id="successState">
+      <div class="success-icon">✓</div>
+      <div class="success-title">Quote request sent</div>
+      <div class="success-body">You'll hear back within a few hours via WhatsApp or email.<br>Collection is in Cork City.</div>
+    </div>
+  </div>
+</section>
+
+<section class="section" id="how">
+  <div class="section-head">
+    <div class="section-head-left">
+      <span class="section-num">01</span>
+      <h2 class="section-label">How it works</h2>
+    </div>
+    <p class="section-sub">Three simple steps from your idea to a printed part in your hand.</p>
+  </div>
+  <div class="steps">
+    <div class="step">
+      <span class="step-num">Step 01</span>
+      <div class="step-title">Send your file or describe your part</div>
+      <p class="step-body">Upload an STL, STEP, or OBJ via WhatsApp or email. We'll get back to you with a quote.</p>
+    </div>
+    <div class="step">
+      <span class="step-num">Step 02</span>
+      <div class="step-title">Get a fixed quote and confirm</div>
+      <p class="step-body">We reply with a fixed price and ready time. No surprises. Payment via Revolut or cash on collection. We only start once you confirm.</p>
+    </div>
+    <div class="step">
+      <span class="step-num">Step 03</span>
+      <div class="step-title">Collect in Cork City</div>
+      <p class="step-body">Pick up in Cork City centre. We confirm the exact address when your order is placed. Postal delivery available on request.</p>
+    </div>
+  </div>
+</section>
+
+<section class="section" id="pricing">
+  <div class="section-head">
+    <div class="section-head-left">
+      <span class="section-num">02</span>
+      <h2 class="section-label">Pricing</h2>
+    </div>
+    <p class="section-sub">Transparent fixed pricing. We confirm the final number before any work begins.</p>
+  </div>
+  <div class="pricing-grid">
+    <div class="price-card">
+      <span class="price-badge">Small parts</span>
+      <div class="price-name">XS — S</div>
+      <div class="price-amount"><sup>€</sup>12<span class="range"> – €22</span></div>
+      <span class="price-sub">Up to ~80g / under 4 hours</span>
+      <hr class="price-divider">
+      <ul class="price-features">
+        <li>Brackets, clips, hooks</li>
+        <li>Replacement parts</li>
+        <li>Phone stands, small tools</li>
+        <li>Next-day available</li>
+      </ul>
+    </div>
+    <div class="price-card featured">
+      <span class="price-badge">Most popular</span>
+      <div class="price-name">Medium</div>
+      <div class="price-amount"><sup>€</sup>25<span class="range"> – €40</span></div>
+      <span class="price-sub">80–200g / 4–8 hours</span>
+      <hr class="price-divider">
+      <ul class="price-features">
+        <li>Enclosures and housings</li>
+        <li>Prototypes and models</li>
+        <li>Organisers, containers</li>
+        <li>Next-day usually available</li>
+      </ul>
+    </div>
+    <div class="price-card">
+      <span class="price-badge">Large parts</span>
+      <div class="price-name">Large</div>
+      <div class="price-amount"><sup>€</sup>45<span class="range">+</span></div>
+      <span class="price-sub">200g+ / 8+ hours</span>
+      <hr class="price-divider">
+      <ul class="price-features">
+        <li>Architectural models</li>
+        <li>Large prototypes</li>
+        <li>Multi-part assemblies</li>
+        <li>2–4 day turnaround</li>
+      </ul>
+    </div>
+  </div>
+  <div class="notice" style="margin-bottom: 0;">
+    <span class="notice-icon">Rush</span>
+    <p class="notice-text"><strong>Next-day service</strong> is +€5 on any order, subject to capacity.</p>
+  </div>
+</section>
+
+<section class="section" id="materials">
+  <div class="section-head">
+    <div class="section-head-left">
+      <span class="section-num">03</span>
+      <h2 class="section-label">Materials</h2>
+    </div>
+    <p class="section-sub">Choose the right material for the job. Unsure? Just describe what you need and we'll recommend.</p>
+  </div>
+  <div class="materials-grid">
+    <div class="mat-cell">
+      <div class="mat-name">PLA</div>
+      <span class="mat-best">Best for most things</span>
+      <p class="mat-desc">Clean finish, dimensionally accurate, easy to post-process. Great for prototypes, display models, and everyday indoor parts.</p>
+      <span class="mat-tag">Included</span>
+    </div>
+    <div class="mat-cell">
+      <div class="mat-name">PETG</div>
+      <span class="mat-best">Functional parts</span>
+      <p class="mat-desc">Stronger and more heat-resistant than PLA. Good for parts that need to handle stress or warmer environments.</p>
+      <span class="mat-tag">+€4 flat</span>
+    </div>
+    <div class="mat-cell">
+      <div class="mat-name">TPU</div>
+      <span class="mat-best">Flexible parts</span>
+      <p class="mat-desc">Rubber-like flexibility. Ideal for gaskets, grips, phone cases, or anything that needs to bend and return to shape.</p>
+      <span class="mat-tag">+€8 flat</span>
+    </div>
+    <div class="mat-cell">
+      <div class="mat-name">Colours</div>
+      <span class="mat-best">All materials</span>
+      <p class="mat-desc">White, black, grey, and natural always in stock. Other colours on request — 1–2 day lead time for filament sourcing.</p>
+      <span class="mat-tag">Ask us</span>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="footer-grid">
+    <div>
+      <a class="footer-brand-logo" href="/" aria-label="3D Please — home">
+        <img src="/logo.png" width="560" height="144" alt="3D Please" class="logo-img logo-img-footer">
+      </a>
+      <p class="footer-tagline">Local 3D printing for Cork City. Prototypes, parts, custom objects. No corporate nonsense.</p>
+    </div>
+    <div>
+      <span class="footer-col-title">Order</span>
+      <ul class="footer-links">
+        <li><a href="#order">Request a quote</a></li>
+        <li><a href="https://wa.me/353832059510" target="_blank" rel="noopener">WhatsApp</a></li>
+        <li><a href="mailto:hello@3dplease.ie">hello@3dplease.ie</a></li>
+      </ul>
+    </div>
+    <div>
+      <span class="footer-col-title">Info</span>
+      <ul class="footer-links">
+        <li><a href="#how">How it works</a></li>
+        <li><a href="#pricing">Pricing</a></li>
+        <li><a href="#materials">Materials</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <span class="footer-copy">© 2026 3D Please — Cork, Ireland</span>
+    <span class="footer-copy">hello@3dplease.ie</span>
+  </div>
+</footer>
+
+<script>
+const form = document.getElementById('quoteForm');
+if (form) {
+  form.addEventListener('submit', async function(e) {
+    e.preventDefault();
+    const btn = form.querySelector('button[type="submit"]');
+    btn.textContent = 'Sending...';
+    btn.disabled = true;
+    try {
+      const res = await fetch(form.action, { method: 'POST', body: new FormData(form), headers: { 'Accept': 'application/json' } });
+      if (res.ok) {
+        document.getElementById('orderCard').style.display = 'none';
+        document.getElementById('successState').style.display = 'block';
+      } else {
+        btn.textContent = 'Something went wrong — try WhatsApp';
+        btn.disabled = false;
+      }
+    } catch {
+      btn.textContent = 'Something went wrong — try WhatsApp';
+      btn.disabled = false;
+    }
+  });
+}
+</script>
+</body>
+</html>
