@@ -4,10 +4,10 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>3D Please — Cork City 3D Printing</title>
-<meta name="description" content="Local 3D printing in Cork City. Upload your STL, 3MF or OBJ and get an instant price. PLA and PETG. Next-day collection.">
+<meta name="description" content="Local 3D printing in Cork City. Upload your STL, 3MF or OBJ and get an instant price. PLA and PETG. Collect in Cork or get it posted anywhere in Ireland.">
 <meta name="keywords" content="3D printing Cork, 3D print Cork City, instant 3D printing quote Cork, STL printing Ireland">
 <meta property="og:title" content="3D Please — Cork City 3D Printing">
-<meta property="og:description" content="Upload your file, see your price instantly, collect in Cork City.">
+<meta property="og:description" content="Upload your file, see your price instantly. Collect in Cork City or we post it anywhere in Ireland.">
 <meta property="og:url" content="https://3dplease.ie">
 <meta property="og:type" content="website">
 <meta property="og:image" content="https://3dplease.ie/og.png">
@@ -481,6 +481,66 @@ nav {
 }
 .btn-ghost:hover { background: var(--paper-warm); }
 
+/* NO FILE PANEL */
+.nofile {
+  margin-top: 16px; padding: 16px 18px; text-align: left;
+  border: 1px solid var(--border-soft); border-radius: 14px; background: var(--surface);
+}
+.nofile-title { font-size: 14px; font-weight: 600; margin-bottom: 4px; }
+.nofile p { font-size: 13px; color: var(--muted); line-height: 1.55; }
+.nofile-links { display: flex; gap: 8px; flex-wrap: wrap; margin: 10px 0 12px; }
+.nofile-links a {
+  font-size: 13px; font-weight: 500; color: var(--ink); text-decoration: none;
+  border: 1px solid var(--border); border-radius: 999px; padding: 7px 12px; background: var(--paper);
+  transition: border-color 0.15s;
+}
+.nofile-links a:hover { border-color: var(--ink); }
+.nofile-links a::after { content: ' ↗'; color: var(--muted-light); }
+.nofile .designer { padding-top: 12px; border-top: 1px solid var(--border-soft); }
+.nofile .designer a { color: var(--accent-text); font-weight: 600; }
+
+/* GALLERY */
+.gallery { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; padding: 0 64px 64px; }
+.gallery figure { margin: 0; }
+.gallery img {
+  width: 100%; height: 540px; object-fit: cover; display: block;
+  border-radius: 16px; border: 1px solid var(--border-soft); background: var(--paper-warm);
+}
+.gallery figcaption { font-size: 13px; color: var(--muted); margin-top: 10px; }
+
+/* REVIEWS */
+.rating-row { display: flex; align-items: center; gap: 14px; flex-wrap: wrap; padding: 0 64px 28px; }
+.rating-big { font-size: 44px; font-weight: 600; letter-spacing: -0.03em; line-height: 1; }
+.stars { color: var(--accent); letter-spacing: 2px; font-size: 18px; }
+.rating-meta { font-size: 14px; color: var(--muted); }
+.rating-meta a { color: var(--ink); font-weight: 500; }
+.reviews-grid {
+  display: grid; grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 20px; padding: 0 64px 64px;
+}
+.review {
+  background: var(--paper); border: 1px solid var(--border-soft); border-radius: 16px;
+  padding: 24px; display: flex; flex-direction: column; gap: 12px; margin: 0;
+}
+.review .stars { font-size: 14px; }
+.review blockquote { margin: 0; font-size: 15.5px; line-height: 1.6; color: var(--ink); }
+.review figcaption { margin-top: auto; font-size: 13px; color: var(--muted); }
+
+/* FAQ */
+.faq { padding: 0 64px 72px; display: grid; gap: 12px; max-width: 980px; }
+.faq details {
+  border: 1px solid var(--border-soft); border-radius: 14px; padding: 18px 20px; background: var(--paper);
+}
+.faq summary {
+  cursor: pointer; font-weight: 600; font-size: 16px; list-style: none;
+  display: flex; justify-content: space-between; align-items: center; gap: 16px;
+}
+.faq summary::-webkit-details-marker { display: none; }
+.faq summary::after { content: '+'; color: var(--muted); font-weight: 400; font-size: 20px; line-height: 1; }
+.faq details[open] summary::after { content: '−'; }
+.faq details p { margin-top: 10px; font-size: 14.5px; color: var(--muted); line-height: 1.65; }
+.faq details a { color: var(--accent-text); font-weight: 500; }
+
 /* NOTICE */
 .notice {
   background: var(--surface);
@@ -617,6 +677,10 @@ footer { background: var(--surface); padding: 56px 64px 32px; border-top: 1px so
   .nav-link { display: none; }
   .notice, .section-head, footer { padding-left: 20px; padding-right: 20px; }
   .steps, .pricing-grid, .materials-grid { padding-left: 20px; padding-right: 20px; }
+  .gallery, .reviews-grid, .rating-row, .faq { padding-left: 20px; padding-right: 20px; }
+  .gallery { grid-template-columns: 1fr; }
+  .reviews-grid { grid-template-columns: 1fr; }
+  .gallery img { height: 340px; }
   .steps, .pricing-grid, .materials-grid { grid-template-columns: 1fr; }
   .section-head { flex-direction: column; gap: 12px; padding-top: 48px; }
   .section-sub { text-align: left; }
@@ -644,8 +708,9 @@ footer { background: var(--surface); padding: 56px 64px 32px; border-top: 1px so
     <img src="logo.png" width="560" height="144" alt="3D Please" class="logo-img">
   </a>
   <a class="nav-link" href="#how">How it works</a>
+  <a class="nav-link" href="#reviews">Reviews</a>
   <a class="nav-link" href="#pricing">Pricing</a>
-  <a class="nav-link" href="#materials">Materials</a>
+  <a class="nav-link" href="#faq">FAQ</a>
   <a class="nav-cta" href="#order">Instant quote</a>
 </nav>
 
@@ -655,7 +720,7 @@ footer { background: var(--surface); padding: 56px 64px 32px; border-top: 1px so
     <h1 class="hero-title">Parts made<br>in Cork.<br><em>Next day.</em></h1>
     <p class="hero-body">
       Local 3D printing for prototypes, replacement parts, and custom objects.
-      Upload your file, see the price instantly, collect in Cork City. One-offs welcome. No nonsense.
+      Upload your file, see the price instantly, collect in Cork City or get it posted anywhere in Ireland. One-offs welcome. No nonsense.
     </p>
     <div class="hero-cta-row">
       <a href="#order" class="btn-primary-hero">Get an instant price →</a>
@@ -671,8 +736,8 @@ footer { background: var(--surface); padding: 56px 64px 32px; border-top: 1px so
         <span class="stat-value">€6.00</span>
       </div>
       <div class="stat">
-        <span class="stat-label">Collection</span>
-        <span class="stat-value">Cork City</span>
+        <span class="stat-label">Google rating</span>
+        <span class="stat-value">5.0 <span style="color:var(--accent)">★★★★★</span></span>
       </div>
     </div>
   </div>
@@ -693,6 +758,16 @@ footer { background: var(--surface); padding: 56px 64px 32px; border-top: 1px so
             <span class="dz-sub">or tap to choose<br>STL · 3MF · OBJ · STEP — up to 25 MB</span>
           </label>
           <div class="dz-points"><span>Price in seconds</span><span>Checked by a person</span><span>Revolut or bank transfer</span></div>
+          <div class="nofile">
+            <div class="nofile-title">No 3D file yet?</div>
+            <p>Most everyday parts already exist as free models. Find yours, download the STL or 3MF and drop it above.</p>
+            <div class="nofile-links">
+              <a href="https://www.printables.com/" target="_blank" rel="noopener">Printables</a>
+              <a href="https://makerworld.com/" target="_blank" rel="noopener">MakerWorld</a>
+              <a href="https://www.thingiverse.com/" target="_blank" rel="noopener">Thingiverse</a>
+            </div>
+            <p class="designer">Need something designed from scratch? <a href="https://wa.me/353832059510?text=Hi%2C%20I%20need%20a%203D%20model%20designed%20%E2%80%94%20can%20you%20recommend%20a%20designer%3F" target="_blank" rel="noopener">Message us</a> and we'll recommend a designer we trust.</p>
+          </div>
         </div>
 
         <!-- STEP 2: model + options + order -->
@@ -788,6 +863,15 @@ footer { background: var(--surface); padding: 56px 64px 32px; border-top: 1px so
               </div>
               <p class="opt-sub" id="rushNote" hidden>This job is too long to promise for tomorrow.</p>
             </div>
+
+            <div class="full">
+              <span class="opt-label">Delivery</span>
+              <div class="seg" role="radiogroup" aria-label="Delivery">
+                <input type="radio" name="delivery" id="d-collect" value="collect" checked><label for="d-collect">Collect in Cork<small>free</small></label>
+                <input type="radio" name="delivery" id="d-post" value="post"><label for="d-post">An Post<small id="postSmall">all Ireland · from €5</small></label>
+              </div>
+              <p class="opt-sub" id="deliveryNote">Pick up in Cork City centre. We send the exact address when it's ready.</p>
+            </div>
           </div>
 
           <div class="price-box" aria-live="polite">
@@ -809,6 +893,16 @@ footer { background: var(--surface); padding: 56px 64px 32px; border-top: 1px so
             <div class="field-group">
               <label for="f-contact">WhatsApp or email</label>
               <input id="f-contact" type="text" name="contact" placeholder="For updates and collection" required>
+            </div>
+          </div>
+          <div class="field-row" id="addressRow" hidden>
+            <div class="field-group">
+              <label for="f-address">Delivery address</label>
+              <input id="f-address" type="text" name="address" autocomplete="street-address" placeholder="12 Main Street, Ennis, Co. Clare">
+            </div>
+            <div class="field-group">
+              <label for="f-eircode">Eircode</label>
+              <input id="f-eircode" type="text" name="eircode" autocomplete="postal-code" placeholder="V95 X2Y3" maxlength="8" style="text-transform:uppercase">
             </div>
           </div>
           <input type="text" name="website" class="hp" tabindex="-1" autocomplete="off" aria-hidden="true">
@@ -860,16 +954,78 @@ footer { background: var(--surface); padding: 56px 64px 32px; border-top: 1px so
     </div>
     <div class="step">
       <span class="step-num">Step 03</span>
-      <div class="step-title">Collect in Cork City</div>
-      <p class="step-body">Pick up in Cork City centre. We confirm the exact address when your order is ready. Postal delivery available on request.</p>
+      <div class="step-title">Collect or get it posted</div>
+      <p class="step-body">Pick up free in Cork City centre, or we post it anywhere in Ireland with An Post: €5 for small parts, €9 for bigger ones.</p>
     </div>
+  </div>
+</section>
+
+<section class="section" id="work">
+  <div class="section-head">
+    <div class="section-head-left">
+      <span class="section-num">02</span>
+      <h2 class="section-label">Printed in Cork</h2>
+    </div>
+    <p class="section-sub">Real parts off our Bambu Lab P2S. No renders, no stock photos.</p>
+  </div>
+  <div class="gallery">
+    <figure>
+      <img src="print-star-wheel.jpg" width="1200" height="1081" loading="lazy" alt="Large black star-shaped wheel with nine arms and a bolted hub">
+      <figcaption>Star wheel with a bolt-pattern hub.</figcaption>
+    </figure>
+    <figure>
+      <img src="print-brackets.jpg" width="1200" height="900" loading="lazy" alt="Two black 3D-printed mounting brackets with bolt holes, showing fine layer lines">
+      <figcaption>Mounting brackets, straight off the printer.</figcaption>
+    </figure>
+  </div>
+</section>
+
+<section class="section" id="reviews">
+  <div class="section-head">
+    <div class="section-head-left">
+      <span class="section-num">03</span>
+      <h2 class="section-label">What customers say</h2>
+    </div>
+    <p class="section-sub">Straight from our Google reviews, word for word.</p>
+  </div>
+  <div class="rating-row">
+    <span class="rating-big">5.0</span>
+    <span class="stars" aria-label="Rated 5 out of 5">★★★★★</span>
+    <span class="rating-meta">on Google · <a href="https://g.page/r/CYiCOIpLPXshEAE" target="_blank" rel="noopener">See our reviews</a></span>
+  </div>
+  <div class="reviews-grid">
+    <figure class="review">
+      <span class="stars" aria-label="5 out of 5 stars">★★★★★</span>
+      <blockquote>“Highly professional work and top quality. The pieces came out exactly as I wanted, with a flawless finish and fast delivery. Totally recommend!”</blockquote>
+      <figcaption>Irene A. · Google review</figcaption>
+    </figure>
+    <figure class="review">
+      <span class="stars" aria-label="5 out of 5 stars">★★★★★</span>
+      <blockquote>“Amazing service! Ordered a custom piece for my hobbyist RC car and it worked without a hassle!”</blockquote>
+      <figcaption>fox clock · Google review</figcaption>
+    </figure>
+    <figure class="review">
+      <span class="stars" aria-label="5 out of 5 stars">★★★★★</span>
+      <blockquote>“Best 3d printing service in cork, exceptional quality and personalised customer service. 5 star”</blockquote>
+      <figcaption>Fold Three · Google review</figcaption>
+    </figure>
+    <figure class="review">
+      <span class="stars" aria-label="5 out of 5 stars">★★★★★</span>
+      <blockquote>“Very nice guy, great communication and quick turn around.”</blockquote>
+      <figcaption>Richard O. · Google review</figcaption>
+    </figure>
+    <figure class="review">
+      <span class="stars" aria-label="5 out of 5 stars">★★★★★</span>
+      <blockquote>“Great service and very professional”</blockquote>
+      <figcaption>Breffní L. · Google review</figcaption>
+    </figure>
   </div>
 </section>
 
 <section class="section" id="pricing">
   <div class="section-head">
     <div class="section-head-left">
-      <span class="section-num">02</span>
+      <span class="section-num">04</span>
       <h2 class="section-label">Pricing</h2>
     </div>
     <p class="section-sub">A guide. Upload your file above for the exact price.</p>
@@ -919,12 +1075,16 @@ footer { background: var(--surface); padding: 56px 64px 32px; border-top: 1px so
     <span class="notice-icon">Rush</span>
     <p class="notice-text"><strong>Next day is included</strong> for prints under 4 hours. Longer jobs: +€3, subject to capacity.</p>
   </div>
+  <div class="notice" style="margin: 12px 0 0;">
+    <span class="notice-icon">Post</span>
+    <p class="notice-text"><strong>We post anywhere in Ireland</strong> with An Post: €5 for small parts, €9 for bigger ones. Collection in Cork City is free.</p>
+  </div>
 </section>
 
 <section class="section" id="materials">
   <div class="section-head">
     <div class="section-head-left">
-      <span class="section-num">03</span>
+      <span class="section-num">05</span>
       <h2 class="section-label">Materials</h2>
     </div>
     <p class="section-sub">Choose the right material for the job. Unsure? Add a note to your order and we'll recommend.</p>
@@ -951,13 +1111,53 @@ footer { background: var(--surface); padding: 56px 64px 32px; border-top: 1px so
   </div>
 </section>
 
+<section class="section" id="faq">
+  <div class="section-head">
+    <div class="section-head-left">
+      <span class="section-num">06</span>
+      <h2 class="section-label">Questions</h2>
+    </div>
+    <p class="section-sub">Anything else? <a href="https://wa.me/353832059510" target="_blank" rel="noopener" style="color:var(--ink)">Ask on WhatsApp</a>.</p>
+  </div>
+  <div class="faq">
+    <details>
+      <summary>What files can I send?</summary>
+      <p>STL, 3MF and OBJ get an instant price. STEP files are welcome too — we quote those by hand, usually within a few hours. Files up to 25 MB, and parts up to 256 mm on each side (bigger parts can be printed in pieces).</p>
+    </details>
+    <details>
+      <summary>I don't have a 3D file. Can you still help?</summary>
+      <p>Most everyday parts already exist as free models on <a href="https://www.printables.com/" target="_blank" rel="noopener">Printables</a>, <a href="https://makerworld.com/" target="_blank" rel="noopener">MakerWorld</a> or <a href="https://www.thingiverse.com/" target="_blank" rel="noopener">Thingiverse</a>. If you need something designed from scratch, <a href="https://wa.me/353832059510?text=Hi%2C%20I%20need%20a%203D%20model%20designed%20%E2%80%94%20can%20you%20recommend%20a%20designer%3F" target="_blank" rel="noopener">message us</a> and we'll recommend a designer we trust.</p>
+    </details>
+    <details>
+      <summary>PLA or PETG?</summary>
+      <p>PLA suits most things: clean finish and accurate, for indoor parts, prototypes and models. PETG is stronger and handles heat better, for parts under stress or in warmer places. PETG is +€1 per order.</p>
+    </details>
+    <details>
+      <summary>Is the instant price the final price?</summary>
+      <p>Yes. A person checks every file before printing, and the price only changes if the file has a problem — we always tell you first.</p>
+    </details>
+    <details>
+      <summary>How do I pay?</summary>
+      <p>By Revolut or bank transfer. We send the details when we confirm your order.</p>
+    </details>
+    <details>
+      <summary>Do you post outside Cork?</summary>
+      <p>Yes, anywhere in Ireland with An Post. It's €5 for small parts and €9 for bigger ones, and the price box shows which applies before you order. We post the day it's ready and An Post usually delivers the next working day. Or collect for free in Cork City centre.</p>
+    </details>
+    <details>
+      <summary>Do you remove the supports?</summary>
+      <p>Yes, for free — or we leave them on if you prefer, which helps with delicate parts. You can also ask for a free timelapse video of your print.</p>
+    </details>
+  </div>
+</section>
+
 <footer>
   <div class="footer-grid">
     <div>
       <a class="footer-brand-logo" href="#" aria-label="3D Please — home">
         <img src="logo.png" width="560" height="144" alt="3D Please" class="logo-img logo-img-footer">
       </a>
-      <p class="footer-tagline">Local 3D printing for Cork City. Prototypes, parts, custom objects. No corporate nonsense.</p>
+      <p class="footer-tagline">Local 3D printing from Cork City, posted anywhere in Ireland. Prototypes, parts, custom objects. No corporate nonsense.</p>
     </div>
     <div>
       <span class="footer-col-title">Order</span>
@@ -965,14 +1165,17 @@ footer { background: var(--surface); padding: 56px 64px 32px; border-top: 1px so
         <li><a href="#order">Instant quote</a></li>
         <li><a href="https://wa.me/353832059510" target="_blank" rel="noopener">WhatsApp</a></li>
         <li><a href="mailto:hello@3dplease.ie">hello@3dplease.ie</a></li>
+        <li><a href="https://g.page/r/CYiCOIpLPXshEAE/review" target="_blank" rel="noopener">Leave us a review</a></li>
       </ul>
     </div>
     <div>
       <span class="footer-col-title">Info</span>
       <ul class="footer-links">
         <li><a href="#how">How it works</a></li>
+        <li><a href="#reviews">Reviews</a></li>
         <li><a href="#pricing">Pricing</a></li>
         <li><a href="#materials">Materials</a></li>
+        <li><a href="#faq">FAQ</a></li>
       </ul>
     </div>
   </div>
@@ -1012,7 +1215,8 @@ const CONFIG = {
   warmupHours: 0.12,       // prep: heating, levelling (~7 min on the P2S)
   bedMm: 256,              // Bambu Lab P2S: 256 × 256 × 256 mm
   maxFileMB: 25,           // keep ≤ 25: the order receiver (Apps Script) has a request size limit
-  whatsapp: '353832059510'
+  whatsapp: '353832059510',
+  shipping: { small: 5.00, large: 9.00, smallMaxGrams: 250, smallMaxSideMm: 200 }   // An Post, anywhere in Ireland
 };
 const LABELS = {
   strength: { standard: 'Standard · 15%', strong: 'Strong · 40%', solid: 'Solid · 100%' },
@@ -1027,6 +1231,15 @@ const previewMode = !CONFIG.endpoint;
 if (previewMode) $('previewStrip').hidden = false;
 
 const state = { file: null, ext: '', positions: null, analysis: null, manual: null, quote: null };
+const track = (name, params) => { try { if (typeof gtag === 'function') gtag('event', name, params || {}); } catch (e) {} };
+// Returning customers: prefill name and contact from this browser only
+try {
+  const saved = JSON.parse(localStorage.getItem('3dp-contact') || '{}');
+  if (saved.name) $('f-name').value = saved.name;
+  if (saved.contact) $('f-contact').value = saved.contact;
+  if (saved.address) $('f-address').value = saved.address;
+  if (saved.eircode) $('f-eircode').value = saved.eircode;
+} catch (e) {}
 
 /* ---------- File intake ---------- */
 ['dragenter', 'dragover'].forEach(ev => dropzone.addEventListener(ev, e => { e.preventDefault(); dropzone.classList.add('drag'); }));
@@ -1262,7 +1475,8 @@ function readOpts() {
   const qty = Math.min(100, Math.max(1, parseInt($('qty').value, 10) || 1));
   return { material: fd.get('material'), colour: fd.get('colour'), strength: fd.get('strength'),
            quality: fd.get('quality'), rush: fd.get('when') === 'rush', removeSupports: fd.get('supportRemoval') !== 'leave',
-           timelapse: fd.get('timelapse') === 'yes', shareOk: fd.get('timelapse') === 'yes' && $('shareOk').checked, qty };
+           timelapse: fd.get('timelapse') === 'yes', shareOk: fd.get('timelapse') === 'yes' && $('shareOk').checked, qty,
+           post: fd.get('delivery') === 'post' };
 }
 
 function computeQuote(a, o) {
@@ -1284,9 +1498,13 @@ function computeQuote(a, o) {
   const rushFree = hours <= CONFIG.rushFreeHours;
   const rush = o.rush && rushAllowed && !rushFree ? CONFIG.rushFee : 0;
   const pre = raw + topUp + petg + rush;
-  const total = Math.ceil(pre / CONFIG.roundTo - 1e-9) * CONFIG.roundTo;
+  const printTotal = Math.ceil(pre / CONFIG.roundTo - 1e-9) * CONFIG.roundTo;
+  const S = CONFIG.shipping;
+  const smallParcel = grams <= S.smallMaxGrams && Math.max(...a.size) <= S.smallMaxSideMm;
+  const shippingFee = smallParcel ? S.small : S.large;
+  const shipping = o.post ? shippingFee : 0;
   return { gramsEach, supportGramsEach, neededSupportGrams, grams, hours, setup, material, machine, topUp, petg, rush, rushAllowed, rushFree,
-           rounding: total - pre, total };
+           rounding: printTotal - pre, printTotal, smallParcel, shippingFee, shipping, total: printTotal + shipping };
 }
 
 const eur = v => '€' + v.toFixed(2);
@@ -1302,15 +1520,23 @@ function render() {
   $('shareWrap').hidden = !tl;
   if (!tl) $('shareOk').checked = false;
   $('w-rush').disabled = false;
+  $('addressRow').hidden = !o.post;
+  $('f-contact').placeholder = o.post ? 'For updates and tracking' : 'For updates and collection';
+  $('deliveryNote').textContent = o.post
+    ? `An Post, anywhere in Ireland: €${CONFIG.shipping.small} for small parts, €${CONFIG.shipping.large} for bigger ones. We post the day it's ready.`
+    : 'Pick up in Cork City centre. We send the exact address when it\'s ready.';
+  $('postSmall').textContent = `all Ireland · from €${CONFIG.shipping.small}`;
 
   if (state.manual) {
+    if (state.tracked !== state.file) { state.tracked = state.file; track('view_quote', { manual: state.manual }); }
     state.quote = null;
     amount.textContent = 'Quoted by hand';
     amount.classList.add('manual');
     $('pbLabel').textContent = 'Your price';
     $('pbMeta').textContent = { step: 'STEP files are checked by a person', unreadable: 'We\'ll open it in our slicer', too_big: 'Needs splitting into parts' }[state.manual];
     $('pbBreak').hidden = true;
-    $('pbNote').textContent = 'Send it with your options and we\'ll reply with a fixed price, usually within a few hours.';
+    $('pbNote').textContent = 'Send it with your options and we\'ll reply with a fixed price, usually within a few hours.' +
+      (o.post ? ` Postage is €${CONFIG.shipping.small} or €${CONFIG.shipping.large} depending on size.` : '');
     btn.textContent = 'Send for a price →';
     btn.disabled = false;
     return;
@@ -1324,7 +1550,9 @@ function render() {
 
   const q = computeQuote(state.analysis, o);
   state.quote = q;
+  if (state.tracked !== state.file) { state.tracked = state.file; track('view_quote', { currency: 'EUR', value: q.total }); }
   $('rushSmall').textContent = q.rushFree ? 'included' : `+€${CONFIG.rushFee} · if capacity`;
+  $('postSmall').textContent = `all Ireland · +€${q.shippingFee}`;
   if (!q.rushAllowed) {
     $('w-rush').disabled = true;
     if (o.rush) { $('w-std').checked = true; return render(); }
@@ -1338,7 +1566,7 @@ function render() {
   const sup = needs ? 'with supports' : 'no supports needed';
   $('supportsField').hidden = !needs;
   $('supportNote').textContent = o.removeSupports
-    ? 'We snap them off and clean the contact points before you collect.'
+    ? 'We snap them off and clean the contact points before it goes out.'
     : 'Handy for delicate parts or if you\'d rather do it yourself. Same price.';
   $('pbMeta').textContent = `≈ ${Math.max(1, Math.round(q.grams))} g · ≈ ${fmtHours(q.hours)} printing · ${sup}`;
   const g = Math.max(1, Math.round(q.grams));
@@ -1349,10 +1577,12 @@ function render() {
   if (q.rush) rows.push(['Next day', q.rush]);
   else if (o.rush && q.rushFree) rows.push(['Next day · included', 0]);
   if (q.rounding > 0.004) rows.push(['Rounded up', q.rounding]);
+  if (q.shipping) rows.push([`Delivery · An Post${q.smallParcel ? ' · small parcel' : ''}`, q.shipping]);
   $('pbTable').innerHTML = rows.map(([k, v]) => `<tr><td>${k}</td><td>${eur(v)}</td></tr>`).join('') +
     `<tr><td style="color:var(--paper);font-weight:600">Total</td><td style="font-weight:600">${eur(q.total)}</td></tr>`;
   $('pbBreak').hidden = false;
-  $('pbNote').textContent = 'Fixed once a person has checked your file — we only change it if the file has a problem, and we tell you first. Payment by Revolut or bank transfer.';
+  $('pbNote').textContent = 'Fixed once a person has checked your file — we only change it if the file has a problem, and we tell you first. Payment by Revolut or bank transfer.' +
+    (o.post ? ' Includes An Post delivery anywhere in Ireland.' : '');
   btn.textContent = `Order for ${eur(q.total)} →`;
   btn.disabled = false;
 }
@@ -1448,10 +1678,11 @@ function buildOrder() {
   const a = state.analysis, q = state.quote;
   return {
     file: { name: state.file.name, sizeKB: Math.round(state.file.size / 1024), type: state.ext },
-    options: { material: o.material, colour: o.colour, strength: o.strength, finish: o.quality, supports: !state.needsSupports ? 'Not needed' : o.removeSupports ? 'We remove them' : 'Leave them on', timelapse: o.timelapse ? (o.shareOk ? 'Yes · OK to share on Instagram' : 'Yes · private') : 'No', quantity: o.qty, ready: o.rush ? 'Next day' : '2–3 days' },
+    options: { material: o.material, colour: o.colour, strength: o.strength, finish: o.quality, supports: !state.needsSupports ? 'Not needed' : o.removeSupports ? 'We remove them' : 'Leave them on', timelapse: o.timelapse ? (o.shareOk ? 'Yes · OK to share on Instagram' : 'Yes · private') : 'No', quantity: o.qty, ready: o.rush ? 'Next day' : '2–3 days', delivery: o.post ? 'An Post' : 'Collect in Cork' },
     model: a ? { sizeMm: a.size.map(v => +v.toFixed(1)), volumeCm3: +(a.volume / 1000).toFixed(2), units: $('units').selectedOptions[0].text, orientation: a.orientLabel || 'as uploaded' } : null,
-    quote: q ? { total: q.total, grams: Math.round(q.grams), hours: +q.hours.toFixed(2) } : { manual: state.manual },
-    customer: { name: fd.get('name').trim(), contact: fd.get('contact').trim(), notes: fd.get('notes').trim() },
+    quote: q ? { total: q.total, shipping: q.shipping, grams: Math.round(q.grams), hours: +q.hours.toFixed(2) } : { manual: state.manual },
+    customer: { name: fd.get('name').trim(), contact: fd.get('contact').trim(), notes: fd.get('notes').trim(),
+                address: o.post ? fd.get('address').trim() : '', eircode: o.post ? fd.get('eircode').trim().toUpperCase() : '' },
     website: fd.get('website') || '',   // honeypot: real people leave this empty
     page: location.href, createdAt: new Date().toISOString()
   };
@@ -1474,7 +1705,18 @@ form.addEventListener('submit', async e => {
   for (const el of [name, contact]) {
     if (!el.value.trim()) { el.focus(); showFormError(el === name ? 'Add your name.' : 'Add a WhatsApp number or email so we can confirm.'); return; }
   }
+  if (readOpts().post) {
+    const addr = $('f-address'), eir = $('f-eircode');
+    if (addr.value.trim().length < 6) { addr.focus(); showFormError('Add the address we should post it to.'); return; }
+    if (!/^[A-Za-z0-9]{3}\s?[A-Za-z0-9]{4}$/.test(eir.value.trim())) { eir.focus(); showFormError('Add a valid Eircode, like V95 X2Y3.'); return; }
+  }
   const order = buildOrder();
+  try {
+    const keep = { name: order.customer.name, contact: order.customer.contact };
+    if (order.customer.address) { keep.address = order.customer.address; keep.eircode = order.customer.eircode; }
+    else { const prev = JSON.parse(localStorage.getItem('3dp-contact') || '{}'); if (prev.address) { keep.address = prev.address; keep.eircode = prev.eircode; } }
+    localStorage.setItem('3dp-contact', JSON.stringify(keep));
+  } catch (e) {}
   if (previewMode) { showPreviewResult(order); return; }
 
   const btn = $('submitBtn'); const label = btn.textContent;
@@ -1488,7 +1730,7 @@ form.addEventListener('submit', async e => {
     });
     const data = await res.json();
     if (!data.ok) throw new Error(data.error || 'failed');
-    if (typeof gtag === 'function') gtag('event', 'generate_lead', { currency: 'EUR', value: order.quote.total || 0 });
+    track('generate_lead', { currency: 'EUR', value: order.quote.total || 0 });
     showSuccess(order, data.ref);
   } catch (err) {
     console.error(err);
@@ -1510,10 +1752,12 @@ function summaryRows(order) {
     ['Timelapse', order.options.timelapse],
     ['Quantity', order.options.quantity],
     ['Ready', order.options.ready],
+    ['Delivery', order.options.delivery + (q.shipping ? ` · ${eur(q.shipping)}` : '')],
     ['Price', q.total ? eur(q.total) : 'Quoted by hand'],
     ['Name', order.customer.name],
     ['Contact', order.customer.contact],
   ];
+  if (order.customer.address) rows.push(['Post to', `${order.customer.address}, ${order.customer.eircode}`]);
   if (order.customer.notes) rows.push(['Notes', order.customer.notes]);
   return rows.map(([k, v]) => `<div><span>${k}</span><span>${escapeHtml(String(v))}</span></div>`).join('');
 }
@@ -1534,7 +1778,8 @@ function showSuccess(order, ref) {
   $('cardTitle').textContent = 'Order received';
   $('successIcon').textContent = '✓';
   $('successTitle').textContent = ref ? `Got it — order ${ref}` : 'Got it';
-  $('successBody').textContent = 'We\'ll check your file and confirm by WhatsApp or email, usually within a few hours. Collection is in Cork City.';
+  $('successBody').textContent = 'We\'ll check your file and confirm by WhatsApp or email, usually within a few hours. ' +
+    (order.customer.address ? 'We post it with An Post the day it\'s ready.' : 'Collection is in Cork City.');
   $('successSummary').innerHTML = summaryRows(order);
 }
 $('backBtn').addEventListener('click', () => {
