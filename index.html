@@ -4,10 +4,10 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>3D Please — Cork City 3D Printing</title>
-<meta name="description" content="Local 3D printing in Cork City. Prototypes, replacement parts and custom objects. Next-day collection. PLA, PETG and TPU available.">
-<meta name="keywords" content="3D printing Cork, 3D print Cork City, prototype printing Cork, FDM printing Ireland">
+<meta name="description" content="Local 3D printing in Cork City. Upload your STL, 3MF or OBJ and get an instant price. PLA and PETG. Next-day collection.">
+<meta name="keywords" content="3D printing Cork, 3D print Cork City, instant 3D printing quote Cork, STL printing Ireland">
 <meta property="og:title" content="3D Please — Cork City 3D Printing">
-<meta property="og:description" content="Local 3D printing in Cork City. Send your file, collect next day.">
+<meta property="og:description" content="Upload your file, see your price instantly, collect in Cork City.">
 <meta property="og:url" content="https://3dplease.ie">
 <meta property="og:type" content="website">
 <meta property="og:image" content="https://3dplease.ie/og.png">
@@ -28,21 +28,31 @@
   gtag('js', new Date());
   gtag('config', 'G-JWLKQWBCTT');
 </script>
+
+<script type="importmap">
+{ "imports": {
+  "three": "https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.module.js",
+  "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.170.0/examples/jsm/"
+} }
+</script>
 <style>
 :root {
-  --ink: #18171a;
-  --ink-soft: #2a2a2e;
-  --paper: #f6f3ed;
-  --paper-warm: #efeae0;
-  --paper-deep: #e6dfd1;
-  --border: #d9d2c2;
-  --border-soft: #e8e2d4;
-  --muted: #625c50;
-  --muted-light: #726c5e;
-  --muted-on-dark: #a8a294;
-  --accent: #c54a1a;
-  --accent-deep: #a13c14;
-  --accent-soft: #f4d4c4;
+  --ink: #0b0b0c;
+  --ink-soft: #27272a;
+  --paper: #ffffff;
+  --paper-warm: #f4f4f5;
+  --paper-deep: #e9e9eb;
+  --surface: #fafafa;
+  --border: #dcdce0;
+  --border-soft: #ececef;
+  --muted: #5c5c66;
+  --muted-light: #75757f;
+  --muted-on-dark: #a1a1aa;
+  --accent: #f04e14;
+  --accent-text: #c2410c;
+  --accent-deep: #c2410c;
+  --accent-soft: #fff0e8;
+  --accent-wash: #fff6f1;
   --sans: 'Geist', -apple-system, BlinkMacSystemFont, sans-serif;
   --mono: 'JetBrains Mono', 'IBM Plex Mono', monospace;
 }
@@ -57,11 +67,20 @@ body {
   line-height: 1.55;
   -webkit-font-smoothing: antialiased;
 }
+[hidden] { display: none !important; }
+
+/* PREVIEW STRIP (only shown while no order endpoint is configured) */
+.preview-strip {
+  background: var(--ink); color: var(--paper);
+  font-family: var(--mono); font-size: 11px; letter-spacing: 0.04em;
+  text-align: center; padding: 8px 16px;
+}
+.preview-strip b { color: var(--accent-soft); font-weight: 500; }
 
 /* NAV */
 nav {
   position: sticky; top: 0; z-index: 100;
-  background: rgba(246, 243, 237, 0.92);
+  background: rgba(255, 255, 255, 0.86);
   backdrop-filter: blur(16px);
   -webkit-backdrop-filter: blur(16px);
   border-bottom: 1px solid var(--border-soft);
@@ -73,13 +92,8 @@ nav {
   text-decoration: none; margin-right: auto;
   height: 28px;
 }
-.logo-img {
-  height: 28px; width: auto;
-  display: block;
-}
-.logo-img-footer {
-  height: 32px;
-}
+.logo-img { height: 28px; width: auto; display: block; }
+.logo-img-footer { height: 32px; }
 .nav-link {
   font-size: 13px; color: var(--muted); text-decoration: none;
   transition: color 0.15s; font-weight: 400;
@@ -91,33 +105,30 @@ nav {
   padding: 8px 18px; text-decoration: none;
   transition: background 0.15s; border-radius: 999px;
 }
-.nav-cta:hover { background: var(--accent); }
+.nav-cta:hover { background: var(--ink-soft); }
 
 /* HERO */
 .hero {
   padding: 80px 64px 100px;
-  display: grid; grid-template-columns: 1.15fr 0.85fr;
-  gap: 80px;
+  display: grid; grid-template-columns: 1fr 1fr;
+  gap: 72px;
+  align-items: start;
   border-bottom: 1px solid var(--border-soft);
   position: relative;
 }
 .hero::before {
   content: '';
-  position: absolute;
-  top: 0; right: 0; bottom: 0;
-  width: 50%;
-  background: linear-gradient(180deg, var(--paper-warm) 0%, var(--paper) 100%);
-  z-index: 0;
-  opacity: 0.6;
+  position: absolute; inset: 0;
+  background-image: radial-gradient(circle, #e4e4e7 1px, transparent 1.2px);
+  background-size: 22px 22px;
+  -webkit-mask-image: linear-gradient(180deg, rgba(0,0,0,.55), transparent 70%);
+          mask-image: linear-gradient(180deg, rgba(0,0,0,.55), transparent 70%);
+  z-index: 0; pointer-events: none;
 }
-.hero-left, .hero-right {
-  position: relative; z-index: 1;
-}
-.hero-left {
-  display: flex; flex-direction: column; justify-content: center;
-}
+.hero-left, .hero-right { position: relative; z-index: 1; }
+.hero-left { display: flex; flex-direction: column; position: sticky; top: 104px; padding-top: 24px; }
 .hero-tag {
-  font-family: var(--mono); font-size: 11px; color: var(--accent);
+  font-family: var(--mono); font-size: 11px; color: var(--accent-text);
   letter-spacing: 0.08em; text-transform: uppercase;
   margin-bottom: 32px;
   display: inline-flex; align-items: center; gap: 10px;
@@ -135,10 +146,7 @@ nav {
   line-height: 1.0; letter-spacing: -0.04em;
   margin-bottom: 28px;
 }
-.hero-title em {
-  font-style: normal; color: var(--accent);
-  font-weight: 600;
-}
+.hero-title em { font-style: normal; color: var(--accent); font-weight: 600; }
 .hero-body {
   font-size: 17px; line-height: 1.65; color: var(--muted);
   font-weight: 400; max-width: 460px; margin-bottom: 40px;
@@ -154,7 +162,7 @@ nav {
   transition: background 0.15s; border-radius: 999px;
   display: inline-flex; align-items: center; gap: 8px;
 }
-.btn-primary-hero:hover { background: var(--accent); }
+.btn-primary-hero:hover { background: var(--ink-soft); }
 .btn-secondary-hero {
   font-family: var(--sans); font-size: 14px; font-weight: 500;
   background: transparent; color: var(--ink);
@@ -163,7 +171,7 @@ nav {
   border: 1px solid var(--border);
   display: inline-flex; align-items: center; gap: 8px;
 }
-.btn-secondary-hero:hover { background: var(--paper-warm); border-color: var(--ink); }
+.btn-secondary-hero:hover { background: var(--surface); border-color: var(--ink); }
 
 .hero-stats {
   display: grid; grid-template-columns: repeat(3, 1fr);
@@ -173,10 +181,7 @@ nav {
   border-radius: 16px;
   overflow: hidden;
 }
-.stat {
-  padding: 20px 24px;
-  background: var(--paper);
-}
+.stat { padding: 20px 24px; background: var(--paper); }
 .stat-label {
   font-family: var(--mono); font-size: 10px; color: var(--muted-light);
   text-transform: uppercase; letter-spacing: 0.08em;
@@ -184,21 +189,19 @@ nav {
 }
 .stat-value { font-size: 16px; font-weight: 500; color: var(--ink); }
 
-/* HERO RIGHT — order card */
-.hero-right {
-  display: flex; flex-direction: column; justify-content: center;
-}
+/* HERO RIGHT — quote card */
+.hero-right { display: flex; flex-direction: column; scroll-margin-top: 72px; }
 .order-card {
   background: var(--paper);
   border: 1px solid var(--border-soft);
-  padding: 32px;
+  padding: 28px;
   border-radius: 20px;
-  box-shadow: 0 1px 2px rgba(24,23,26,0.04), 0 8px 24px rgba(24,23,26,0.04);
+  box-shadow: 0 1px 2px rgba(0,0,0,0.04), 0 16px 40px -12px rgba(0,0,0,0.10);
 }
 .order-title {
   font-family: var(--mono); font-size: 11px; color: var(--muted);
   text-transform: uppercase; letter-spacing: 0.1em;
-  margin-bottom: 24px;
+  margin-bottom: 20px;
   display: flex; align-items: center; gap: 8px;
 }
 .dot {
@@ -206,14 +209,200 @@ nav {
   border-radius: 50%;
   box-shadow: 0 0 0 3px var(--accent-soft);
 }
-.field-group { margin-bottom: 16px; }
-.field-group label {
-  font-family: var(--sans); font-size: 12px; color: var(--ink);
-  font-weight: 500;
+
+/* Dropzone */
+.dropzone {
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  gap: 8px; text-align: center;
+  border: 1.5px dashed #d4d4d8;
+  border-radius: 16px;
+  padding: 40px 20px;
+  background: var(--surface);
+  cursor: pointer;
+  transition: border-color 0.15s, background 0.15s;
+}
+.dropzone:hover, .dropzone.drag, .dropzone:focus-visible {
+  border-color: var(--accent); background: var(--accent-wash); outline: none;
+}
+.dz-icon {
+  width: 48px; height: 48px; border-radius: 50%;
+  background: var(--paper); border: 1px solid var(--border-soft); box-shadow: 0 1px 2px rgba(0,0,0,.05);
+  display: flex; align-items: center; justify-content: center;
+  margin-bottom: 6px; color: var(--accent);
+}
+.dz-title { font-size: 17px; font-weight: 600; letter-spacing: -0.01em; }
+.dz-sub { font-family: var(--mono); font-size: 11px; color: var(--muted); }
+.dz-points {
+  display: flex; gap: 14px; flex-wrap: wrap; justify-content: center;
+  margin-top: 14px; font-size: 12px; color: var(--muted);
+}
+.dz-points span::before { content: '✓ '; color: var(--accent); font-weight: 600; }
+.dz-note { font-size: 12.5px; color: var(--muted); text-align: center; margin-top: 14px; }
+.dz-note a { color: var(--ink); }
+
+/* Viewer + file info */
+.viewer {
+  position: relative; height: 250px;
+  border-radius: 14px; overflow: hidden;
+  background: radial-gradient(circle at 50% 30%, #ffffff 0%, #efeff1 80%);
+  border: 1px solid var(--border-soft);
+  touch-action: none;
+}
+.viewer canvas { display: block; width: 100%; height: 100%; }
+.viewer-msg {
+  position: absolute; inset: 0;
+  display: flex; flex-direction: column; gap: 10px;
+  align-items: center; justify-content: center; text-align: center; padding: 20px;
+  font-family: var(--mono); font-size: 11px; color: var(--muted);
+}
+.spinner {
+  width: 22px; height: 22px; border-radius: 50%;
+  border: 2px solid var(--border); border-top-color: var(--accent);
+  animation: spin 0.8s linear infinite;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+.viewer-hint {
+  position: absolute; bottom: 8px; right: 12px;
+  font-family: var(--mono); font-size: 10px; color: var(--muted-light);
+  pointer-events: none;
+}
+.file-row {
+  display: flex; align-items: center; justify-content: space-between;
+  gap: 12px; margin-top: 12px;
+}
+.file-name {
+  font-size: 13.5px; font-weight: 500;
+  overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+}
+.link-btn {
+  background: none; border: none; cursor: pointer; flex-shrink: 0;
+  font-family: var(--sans); font-size: 12.5px; color: var(--accent-text);
+  text-decoration: underline; text-underline-offset: 3px;
+}
+.specs {
+  display: flex; align-items: center; gap: 8px; flex-wrap: wrap;
+  font-family: var(--mono); font-size: 11px; color: var(--muted);
+  margin-top: 4px;
+}
+.specs select {
+  font-family: var(--mono); font-size: 11px; color: var(--ink);
+  border: 1px solid var(--border); border-radius: 6px;
+  background: var(--paper); padding: 2px 4px; cursor: pointer;
+}
+.alert {
+  font-size: 12.5px; line-height: 1.5; color: var(--ink);
+  padding: 10px 12px; border-radius: 10px; margin-top: 10px;
+  background: var(--accent-wash); border: 1px solid var(--accent-soft);
+}
+.alert.note { background: var(--paper-warm); border-color: var(--border-soft); color: var(--muted); }
+
+/* Options */
+.opts { display: grid; grid-template-columns: 1fr auto; gap: 16px 14px; margin-top: 20px; }
+.opts .full { grid-column: 1 / -1; }
+.opt-label {
+  font-size: 12px; font-weight: 500; color: var(--ink);
   display: block; margin-bottom: 6px;
 }
+.opt-label .hint { color: var(--muted-light); font-weight: 400; }
+.seg {
+  display: flex; gap: 3px; padding: 3px;
+  background: var(--paper-warm); border: 1px solid transparent;
+  border-radius: 12px;
+}
+.seg input { position: absolute; opacity: 0; pointer-events: none; }
+.seg label {
+  flex: 1; text-align: center; cursor: pointer;
+  font-size: 13px; font-weight: 500; color: var(--muted); line-height: 1.25;
+  padding: 8px 6px; border-radius: 8px;
+  transition: background 0.12s, color 0.12s;
+}
+.seg label small {
+  display: block; font-family: var(--mono); font-size: 10px; font-weight: 400;
+  color: var(--muted-light); margin-top: 2px;
+}
+.seg input:checked + label {
+  background: var(--paper); color: var(--ink);
+  box-shadow: 0 1px 3px rgba(0,0,0,0.10), 0 0 0 1px rgba(0,0,0,0.04);
+}
+.seg input:focus-visible + label { outline: 2px solid var(--accent); outline-offset: 1px; }
+.seg input:disabled + label { opacity: 0.4; cursor: not-allowed; }
+
+.swatches { display: flex; gap: 8px; flex-wrap: wrap; }
+.swatch input { position: absolute; opacity: 0; pointer-events: none; }
+.swatch label {
+  display: inline-flex; align-items: center; gap: 7px; cursor: pointer;
+  padding: 5px 12px 5px 5px; border-radius: 999px;
+  border: 1px solid var(--border-soft); background: var(--paper);
+  font-size: 12.5px; color: var(--muted); font-weight: 500;
+  transition: border-color 0.12s;
+}
+.swatch .chip { width: 20px; height: 20px; border-radius: 50%; border: 1px solid rgba(24,23,26,0.15); }
+.swatch input:checked + label { border-color: var(--ink); color: var(--ink); box-shadow: 0 0 0 1px var(--ink); }
+.swatch input:focus-visible + label { outline: 2px solid var(--accent); outline-offset: 2px; }
+
+.stepper {
+  display: flex; align-items: center; height: 40px;
+  border: 1px solid var(--border); border-radius: 10px; overflow: hidden;
+  background: var(--paper);
+}
+.stepper button {
+  width: 36px; height: 100%; border: none; background: transparent; cursor: pointer;
+  font-size: 18px; color: var(--ink); font-family: var(--sans);
+}
+.stepper button:hover { background: var(--paper-warm); }
+.stepper input {
+  width: 40px; height: 100%; text-align: center; border: none; outline: none;
+  font-family: var(--sans); font-size: 14px; font-weight: 500; color: var(--ink);
+  background: transparent; -moz-appearance: textfield;
+}
+.stepper input::-webkit-outer-spin-button,
+.stepper input::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
+.opt-sub { font-size: 11.5px; color: var(--muted-light); margin-top: 6px; }
+.check {
+  display: flex; align-items: center; gap: 8px; cursor: pointer;
+  font-size: 12.5px; color: var(--muted); margin-top: 10px;
+}
+.check input { width: 16px; height: 16px; accent-color: var(--ink); cursor: pointer; }
+
+/* Price box */
+.price-box {
+  background: var(--ink); color: var(--paper);
+  border-radius: 14px; padding: 18px 20px;
+  margin: 22px 0 18px;
+}
+.pb-label {
+  font-family: var(--mono); font-size: 10px; color: var(--muted-on-dark);
+  text-transform: uppercase; letter-spacing: 0.1em;
+}
+.pb-amount {
+  font-size: 40px; font-weight: 600; letter-spacing: -0.035em; line-height: 1.1;
+  margin-top: 4px;
+}
+.pb-amount.manual { font-size: 26px; letter-spacing: -0.02em; }
+.pb-meta { font-family: var(--mono); font-size: 11px; color: var(--muted-on-dark); margin-top: 6px; }
+.pb-note {
+  font-size: 12px; color: var(--muted-on-dark); line-height: 1.55;
+  margin-top: 12px; padding-top: 12px; border-top: 1px solid rgba(255,255,255,0.1);
+}
+.pb-break { margin-top: 10px; }
+.pb-break summary {
+  cursor: pointer; font-family: var(--mono); font-size: 11px; color: var(--paper);
+  list-style: none; display: inline-flex; align-items: center; gap: 6px;
+}
+.pb-break summary::-webkit-details-marker { display: none; }
+.pb-break summary::after { content: '+'; color: var(--accent-soft); }
+.pb-break[open] summary::after { content: '−'; }
+.pb-break table { width: 100%; border-collapse: collapse; margin-top: 8px; font-size: 12px; }
+.pb-break td { padding: 4px 0; color: var(--muted-on-dark); border-bottom: 1px solid rgba(255,255,255,0.06); }
+.pb-break td:last-child { text-align: right; color: var(--paper); font-family: var(--mono); font-size: 11.5px; }
+
+/* Contact fields */
+.field-group { margin-bottom: 14px; }
+.field-group label {
+  font-family: var(--sans); font-size: 12px; color: var(--ink);
+  font-weight: 500; display: block; margin-bottom: 6px;
+}
 .field-group input,
-.field-group select,
 .field-group textarea {
   width: 100%; padding: 11px 14px;
   border: 1px solid var(--border); background: var(--paper);
@@ -225,67 +414,82 @@ nav {
 .field-group input::placeholder,
 .field-group textarea::placeholder { color: var(--muted-light); }
 .field-group input:focus,
-.field-group select:focus,
 .field-group textarea:focus {
   border-color: var(--accent);
   box-shadow: 0 0 0 3px var(--accent-soft);
 }
 .field-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.hp { position: absolute; left: -9999px; width: 1px; height: 1px; opacity: 0; }
 .btn-submit {
-  width: 100%; padding: 13px;
-  background: var(--ink); color: var(--paper);
+  width: 100%; padding: 14px;
+  background: var(--ink); color: #fff;
   border: none; cursor: pointer;
-  font-family: var(--sans); font-size: 14px; font-weight: 500;
+  font-family: var(--sans); font-size: 15px; font-weight: 600;
   transition: background 0.15s;
-  margin-top: 8px;
+  margin-top: 4px;
   border-radius: 10px;
   display: flex; align-items: center; justify-content: center; gap: 6px;
 }
-.btn-submit:hover { background: var(--accent); }
-.btn-submit:disabled { opacity: 0.5; cursor: not-allowed; }
+.btn-submit:hover { background: var(--ink-soft); }
+.btn-submit:disabled { opacity: 0.55; cursor: not-allowed; }
+.form-error { font-size: 12.5px; color: var(--accent-text); margin-top: 10px; text-align: center; }
+.fine-print { font-size: 11.5px; color: var(--muted-light); text-align: center; margin-top: 10px; line-height: 1.5; }
+
 .or-divider {
-  text-align: center; margin: 16px 0;
+  text-align: center; margin: 18px 0 14px;
   font-family: var(--mono); font-size: 11px; color: var(--muted-light);
   position: relative;
 }
 .or-divider::before, .or-divider::after {
   content: ''; position: absolute; top: 50%;
-  width: calc(50% - 20px); height: 1px; background: var(--border-soft);
+  width: calc(50% - 90px); height: 1px; background: var(--border-soft);
 }
 .or-divider::before { left: 0; }
 .or-divider::after { right: 0; }
 .btn-whatsapp {
   width: 100%; padding: 12px;
-  background: var(--paper-warm); color: var(--ink);
-  border: 1px solid var(--border-soft); cursor: pointer;
+  background: var(--paper); color: var(--ink);
+  border: 1px solid var(--border); cursor: pointer;
   font-family: var(--sans); font-size: 14px; font-weight: 500;
   text-decoration: none; display: flex; align-items: center;
   justify-content: center; gap: 8px; transition: all 0.15s;
   border-radius: 10px;
 }
-.btn-whatsapp:hover { background: var(--paper-deep); }
+.btn-whatsapp:hover { background: var(--surface); border-color: var(--ink); }
 
-.success-state {
-  text-align: center; padding: 48px 20px; display: none;
-}
+.success-state { text-align: center; padding: 40px 8px 8px; }
 .success-icon {
   width: 48px; height: 48px; margin: 0 auto 18px;
   background: var(--accent-soft); border-radius: 50%;
   display: flex; align-items: center; justify-content: center;
-  font-size: 22px; color: var(--accent);
+  font-size: 22px; color: var(--accent-text);
 }
 .success-title { font-size: 18px; font-weight: 600; margin-bottom: 8px; }
 .success-body { font-size: 14px; color: var(--muted); line-height: 1.6; }
+.success-summary {
+  text-align: left; margin: 20px 0 8px; font-size: 13px;
+  border: 1px solid var(--border-soft); border-radius: 12px; overflow: hidden;
+}
+.success-summary div { display: flex; justify-content: space-between; gap: 12px; padding: 9px 14px; border-bottom: 1px solid var(--border-soft); }
+.success-summary div:last-child { border-bottom: none; }
+.success-summary span:first-child { color: var(--muted); }
+.success-summary span:last-child { font-weight: 500; text-align: right; overflow-wrap: anywhere; }
+.btn-ghost {
+  margin-top: 16px; padding: 10px 18px; border-radius: 999px;
+  border: 1px solid var(--border); background: transparent; cursor: pointer;
+  font-family: var(--sans); font-size: 13px; font-weight: 500; color: var(--ink);
+}
+.btn-ghost:hover { background: var(--paper-warm); }
 
-/* NOTICE — soft and integrated */
+/* NOTICE */
 .notice {
-  background: var(--paper-warm);
+  background: var(--surface);
   border-bottom: 1px solid var(--border-soft);
   padding: 20px 64px;
   display: flex; align-items: center; gap: 16px;
 }
 .notice-icon {
-  font-family: var(--mono); font-size: 10px; color: var(--accent);
+  font-family: var(--mono); font-size: 10px; color: var(--accent-text);
   background: var(--accent-soft); padding: 5px 10px;
   white-space: nowrap; text-transform: uppercase; letter-spacing: 0.06em;
   border-radius: 999px; font-weight: 500;
@@ -295,74 +499,42 @@ nav {
 
 /* SECTIONS */
 .section { border-bottom: 1px solid var(--border-soft); }
+#pricing { background: var(--surface); }
+#pricing .price-card:not(.featured) { background: var(--paper); }
 .section-head {
   padding: 64px 64px 32px;
   display: flex; align-items: baseline; justify-content: space-between;
   gap: 40px;
 }
 .section-head-left { display: flex; align-items: baseline; gap: 16px; }
-.section-num {
-  font-family: var(--mono); font-size: 11px; color: var(--muted-light);
-  letter-spacing: 0.04em;
-}
-.section-label {
-  font-family: var(--sans); font-size: 28px; font-weight: 600;
-  letter-spacing: -0.02em; color: var(--ink);
-}
-.section-sub {
-  font-size: 14px; color: var(--muted); max-width: 320px;
-  text-align: right;
-}
+.section-num { font-family: var(--mono); font-size: 11px; color: var(--muted-light); letter-spacing: 0.04em; }
+.section-label { font-family: var(--sans); font-size: 28px; font-weight: 600; letter-spacing: -0.02em; color: var(--ink); }
+.section-sub { font-size: 14px; color: var(--muted); max-width: 320px; text-align: right; }
 
 /* HOW IT WORKS */
-.steps {
-  display: grid; grid-template-columns: repeat(3, 1fr);
-  gap: 20px;
-  padding: 0 64px 64px;
-}
+.steps { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; padding: 0 64px 64px; }
 .step {
-  background: var(--paper);
-  border: 1px solid var(--border-soft);
-  border-radius: 16px;
-  padding: 32px;
-  transition: all 0.2s;
+  background: var(--paper); border: 1px solid var(--border-soft);
+  border-radius: 16px; padding: 32px; transition: all 0.2s;
 }
-.step:hover {
-  border-color: var(--border);
-  transform: translateY(-2px);
-}
+.step:hover { border-color: var(--border); transform: translateY(-2px); }
 .step-num {
-  font-family: var(--mono); font-size: 11px; color: var(--accent);
+  font-family: var(--mono); font-size: 11px; color: var(--accent-text);
   display: inline-block; margin-bottom: 24px;
-  background: var(--accent-soft);
-  padding: 4px 10px;
-  border-radius: 999px;
-  letter-spacing: 0.04em;
+  background: var(--accent-soft); padding: 4px 10px;
+  border-radius: 999px; letter-spacing: 0.04em;
 }
 .step-title { font-size: 18px; font-weight: 600; margin-bottom: 10px; line-height: 1.3; }
 .step-body { font-size: 14px; color: var(--muted); line-height: 1.65; }
 
 /* PRICING */
-.pricing-grid {
-  display: grid; grid-template-columns: repeat(3, 1fr);
-  gap: 20px;
-  padding: 0 64px 32px;
-}
+.pricing-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; padding: 0 64px 32px; }
 .price-card {
-  background: var(--paper);
-  border: 1px solid var(--border-soft);
-  border-radius: 16px;
-  padding: 36px 32px;
-  position: relative;
-  transition: all 0.2s;
+  background: var(--paper); border: 1px solid var(--border-soft);
+  border-radius: 16px; padding: 36px 32px; position: relative; transition: all 0.2s;
 }
 .price-card:hover { border-color: var(--border); transform: translateY(-2px); }
-.price-card.featured {
-  background: var(--ink);
-  color: var(--paper);
-  border-color: var(--ink);
-}
-.price-card.featured:hover { transform: translateY(-2px); }
+.price-card.featured { background: var(--ink); color: var(--paper); border-color: var(--ink); }
 .price-card.featured .price-name,
 .price-card.featured .price-amount { color: var(--paper); }
 .price-card.featured .price-sub { color: var(--muted-on-dark); }
@@ -370,60 +542,41 @@ nav {
 .price-card.featured .price-features li::before { color: var(--accent); }
 .price-card.featured .price-divider { border-color: rgba(255,255,255,0.1); }
 .price-badge {
-  font-family: var(--mono); font-size: 10px;
-  text-transform: uppercase; letter-spacing: 0.08em;
-  display: inline-block; margin-bottom: 16px;
-  padding: 4px 10px; border-radius: 999px;
+  font-family: var(--mono); font-size: 10px; text-transform: uppercase; letter-spacing: 0.08em;
+  display: inline-block; margin-bottom: 16px; padding: 4px 10px; border-radius: 999px;
   background: var(--paper-warm); color: var(--muted);
 }
-.price-card.featured .price-badge {
-  background: var(--accent); color: var(--paper);
-}
+.price-card.featured .price-badge { background: var(--accent); color: var(--paper); }
 .price-name { font-size: 22px; font-weight: 600; margin-bottom: 4px; }
 .price-amount {
   font-size: 44px; font-weight: 600; letter-spacing: -0.04em;
-  margin-bottom: 4px; display: flex; align-items: baseline; gap: 2px;
-  line-height: 1;
+  margin-bottom: 4px; display: flex; align-items: baseline; gap: 2px; line-height: 1;
 }
 .price-amount sup { font-size: 20px; font-weight: 500; top: -8px; }
 .price-amount .range { font-size: 20px; color: var(--muted); font-weight: 400; }
 .price-card.featured .price-amount .range { color: var(--muted-on-dark); }
-.price-sub {
-  font-family: var(--mono); font-size: 11px; color: var(--muted);
-  margin-bottom: 28px; display: block; margin-top: 8px;
-}
+.price-sub { font-family: var(--mono); font-size: 11px; color: var(--muted); margin-bottom: 28px; display: block; margin-top: 8px; }
 .price-divider { border: none; border-top: 1px solid var(--border-soft); margin-bottom: 20px; }
 .price-features { list-style: none; }
 .price-features li {
-  font-size: 14px; color: var(--muted);
-  padding: 8px 0; border-bottom: 1px solid var(--border-soft);
+  font-size: 14px; color: var(--muted); padding: 8px 0;
+  border-bottom: 1px solid var(--border-soft);
   display: flex; align-items: center; gap: 10px;
 }
 .price-features li:last-child { border-bottom: none; }
-.price-features li::before {
-  content: '✓'; color: var(--accent); font-size: 12px; flex-shrink: 0;
-  font-weight: 600;
-}
+.price-features li::before { content: '✓'; color: var(--accent); font-size: 12px; flex-shrink: 0; font-weight: 600; }
 
 /* MATERIALS */
-.materials-grid {
-  display: grid; grid-template-columns: repeat(4, 1fr);
-  gap: 16px;
-  padding: 0 64px 64px;
-}
+.materials-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; padding: 0 64px 64px; }
 .mat-cell {
-  background: var(--paper);
-  border: 1px solid var(--border-soft);
-  border-radius: 14px;
-  padding: 24px;
-  transition: all 0.2s;
+  background: var(--paper); border: 1px solid var(--border-soft);
+  border-radius: 14px; padding: 24px; transition: all 0.2s;
 }
 .mat-cell:hover { border-color: var(--border); }
 .mat-name { font-size: 20px; font-weight: 600; margin-bottom: 6px; }
 .mat-best {
   font-family: var(--mono); font-size: 10px; text-transform: uppercase;
-  letter-spacing: 0.06em; color: var(--accent);
-  display: block; margin-bottom: 14px;
+  letter-spacing: 0.06em; color: var(--accent-text); display: block; margin-bottom: 14px;
 }
 .mat-desc { font-size: 13px; color: var(--muted); line-height: 1.6; margin-bottom: 18px; }
 .mat-tag {
@@ -433,70 +586,67 @@ nav {
 }
 
 /* FOOTER */
-footer {
-  background: var(--paper-warm);
-  padding: 56px 64px 32px;
-  border-top: 1px solid var(--border-soft);
-}
-.footer-grid {
-  display: grid; grid-template-columns: 1.5fr 1fr 1fr;
-  gap: 48px; margin-bottom: 40px;
-}
-.footer-brand-logo {
-  display: inline-flex; align-items: center; gap: 6px;
-  text-decoration: none; margin-bottom: 16px;
-  height: 28px;
-}
+footer { background: var(--surface); padding: 56px 64px 32px; border-top: 1px solid var(--border-soft); }
+.footer-grid { display: grid; grid-template-columns: 1.5fr 1fr 1fr; gap: 48px; margin-bottom: 40px; }
+.footer-brand-logo { display: inline-flex; align-items: center; gap: 6px; text-decoration: none; margin-bottom: 16px; height: 28px; }
 .footer-tagline { font-size: 14px; color: var(--muted); line-height: 1.65; max-width: 320px; margin-top: 16px; }
 .footer-col-title {
   font-family: var(--mono); font-size: 10px; color: var(--muted);
-  text-transform: uppercase; letter-spacing: 0.1em;
-  margin-bottom: 16px; display: block;
+  text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 16px; display: block;
 }
 .footer-links { list-style: none; display: flex; flex-direction: column; gap: 10px; }
-.footer-links a {
-  font-size: 14px; color: var(--ink); text-decoration: none;
-  transition: color 0.15s;
-}
-.footer-links a:hover { color: var(--accent); }
-.footer-bottom {
-  border-top: 1px solid var(--border-soft);
-  padding-top: 24px;
-  display: flex; justify-content: space-between; align-items: center;
-}
+.footer-links a { font-size: 14px; color: var(--ink); text-decoration: none; transition: color 0.15s; }
+.footer-links a:hover { color: var(--accent-text); }
+.footer-bottom { border-top: 1px solid var(--border-soft); padding-top: 24px; display: flex; justify-content: space-between; align-items: center; }
 .footer-copy { font-family: var(--mono); font-size: 11px; color: var(--muted); }
 
 /* RESPONSIVE */
+@media (max-width: 1100px) {
+  .hero { gap: 48px; padding-left: 40px; padding-right: 40px; }
+  .hero-title { font-size: 56px; }
+}
 @media (max-width: 900px) {
-  .hero { grid-template-columns: 1fr; gap: 48px; padding: 48px 24px 60px; }
+  .hero { grid-template-columns: 1fr; gap: 40px; padding: 40px 20px 56px; }
   .hero::before { display: none; }
-  .hero-title { font-size: 48px; }
-  nav { padding: 0 24px; gap: 16px; }
+  .hero-left { position: static; padding-top: 0; }
+  .hero-title { font-size: 42px; margin-bottom: 16px; }
+  .hero-tag { margin-bottom: 20px; }
+  .hero-body { font-size: 16px; margin-bottom: 24px; }
+  .hero-cta-row { display: none; }  /* the quote card follows right below */
+  nav { padding: 0 20px; gap: 16px; }
   .nav-link { display: none; }
-  .notice, .section-head, footer { padding-left: 24px; padding-right: 24px; }
-  .steps, .pricing-grid, .materials-grid { padding-left: 24px; padding-right: 24px; }
-  .steps, .pricing-grid { grid-template-columns: 1fr; }
-  .materials-grid { grid-template-columns: 1fr 1fr; }
+  .notice, .section-head, footer { padding-left: 20px; padding-right: 20px; }
+  .steps, .pricing-grid, .materials-grid { padding-left: 20px; padding-right: 20px; }
+  .steps, .pricing-grid, .materials-grid { grid-template-columns: 1fr; }
   .section-head { flex-direction: column; gap: 12px; padding-top: 48px; }
   .section-sub { text-align: left; }
   .footer-grid { grid-template-columns: 1fr; gap: 32px; }
   .footer-bottom { flex-direction: column; gap: 12px; }
-  .hero-stats { grid-template-columns: 1fr; }
-  .field-row { grid-template-columns: 1fr; }
-  .order-card { padding: 24px; }
+  .hero-stats { grid-template-columns: 1fr 1fr 1fr; }
+  .stat { padding: 14px 14px; }
+  .stat-value { font-size: 14px; }
+  .order-card { padding: 20px; border-radius: 18px; }
+  .viewer { height: 230px; }
+}
+@media (max-width: 420px) {
+  .field-row { grid-template-columns: 1fr; gap: 0; }
+  .seg label { font-size: 12.5px; padding: 8px 4px; }
+  .pb-amount { font-size: 36px; }
 }
 </style>
 </head>
 <body>
 
+<div class="preview-strip" id="previewStrip" hidden><b>PREVIEW</b> · orders placed on this page are not sent anywhere yet</div>
+
 <nav>
-  <a class="nav-brand" href="/" aria-label="3D Please — home">
-    <img src="/logo.png" width="560" height="144" alt="3D Please" class="logo-img">
+  <a class="nav-brand" href="#" aria-label="3D Please — home">
+    <img src="logo.png" width="560" height="144" alt="3D Please" class="logo-img">
   </a>
   <a class="nav-link" href="#how">How it works</a>
   <a class="nav-link" href="#pricing">Pricing</a>
   <a class="nav-link" href="#materials">Materials</a>
-  <a class="nav-cta" href="#order">Get a quote</a>
+  <a class="nav-cta" href="#order">Instant quote</a>
 </nav>
 
 <section class="hero">
@@ -504,11 +654,11 @@ footer {
     <div class="hero-tag">Cork City · FDM Printing</div>
     <h1 class="hero-title">Parts made<br>in Cork.<br><em>Next day.</em></h1>
     <p class="hero-body">
-      Local 3D printing for prototypes, replacement parts, and custom objects. 
-      Send a file, collect in Cork City. No minimums. No delays. No nonsense.
+      Local 3D printing for prototypes, replacement parts, and custom objects.
+      Upload your file, see the price instantly, collect in Cork City. One-offs welcome. No nonsense.
     </p>
     <div class="hero-cta-row">
-      <a href="#order" class="btn-primary-hero">Get a quote →</a>
+      <a href="#order" class="btn-primary-hero">Get an instant price →</a>
       <a href="#pricing" class="btn-secondary-hero">See pricing</a>
     </div>
     <div class="hero-stats">
@@ -517,8 +667,8 @@ footer {
         <span class="stat-value">Next day</span>
       </div>
       <div class="stat">
-        <span class="stat-label">Starting from</span>
-        <span class="stat-value">€12.00</span>
+        <span class="stat-label">From</span>
+        <span class="stat-value">€6.00</span>
       </div>
       <div class="stat">
         <span class="stat-label">Collection</span>
@@ -528,53 +678,163 @@ footer {
   </div>
 
   <div class="hero-right" id="order">
-    <div class="order-card" id="orderCard">
-      <div class="order-title"><span class="dot"></span>Request a quote</div>
-      <form id="quoteForm" action="https://formspree.io/f/mykoaadd" method="POST">
-        <input type="hidden" name="_subject" value="New quote request — 3D Please">
-        <div class="field-group">
-          <label for="f-description">Describe your part</label>
-          <textarea id="f-description" name="description" rows="3" placeholder="e.g. A bracket for mounting a shelf, roughly 60×40mm" required></textarea>
+    <div class="order-card">
+      <div class="order-title"><span class="dot"></span><span id="cardTitle">Instant quote</span></div>
+
+      <div id="quoteFlow">
+        <!-- STEP 1: upload -->
+        <div id="uploadStep">
+          <label class="dropzone" id="dropzone" for="fileInput" tabindex="0">
+            <input type="file" id="fileInput" accept=".stl,.3mf,.obj,.step,.stp" hidden>
+            <span class="dz-icon" aria-hidden="true">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 16V4"/><path d="m6 10 6-6 6 6"/><path d="M4 20h16"/></svg>
+            </span>
+            <span class="dz-title">Drop your 3D file here</span>
+            <span class="dz-sub">or tap to choose<br>STL · 3MF · OBJ · STEP — up to 25 MB</span>
+          </label>
+          <div class="dz-points"><span>Price in seconds</span><span>Checked by a person</span><span>Revolut or bank transfer</span></div>
         </div>
-        <div class="field-row">
-          <div class="field-group">
-            <label for="f-material">Material</label>
-            <select id="f-material" name="material">
-              <option>PLA — standard</option>
-              <option>PETG — stronger</option>
-              <option>TPU — flexible</option>
-              <option>Not sure</option>
+
+        <!-- STEP 2: model + options + order -->
+        <form id="quoteForm" novalidate hidden>
+          <div class="viewer" id="viewer">
+            <div class="viewer-msg" id="viewerMsg"><div class="spinner"></div><span>Reading your file…</span></div>
+            <span class="viewer-hint" id="viewerHint" hidden>drag to rotate · pinch to zoom</span>
+          </div>
+          <div class="file-row">
+            <span class="file-name" id="fileName">—</span>
+            <button type="button" class="link-btn" id="changeFile">Change file</button>
+          </div>
+          <div class="specs" id="specs" hidden>
+            <span id="dims">—</span>
+            <span>·</span>
+            <label for="units" style="display:inline">units</label>
+            <select id="units" aria-label="File units">
+              <option value="1">mm</option>
+              <option value="10">cm</option>
+              <option value="25.4">inches</option>
             </select>
           </div>
-          <div class="field-group">
-            <label for="f-urgency">When?</label>
-            <select id="f-urgency" name="urgency">
-              <option>Next day (+ €5)</option>
-              <option>2–3 days (standard)</option>
-              <option>Not urgent</option>
-            </select>
+          <div id="alerts"></div>
+
+          <div class="opts">
+            <div>
+              <span class="opt-label">Material</span>
+              <div class="seg" role="radiogroup" aria-label="Material">
+                <input type="radio" name="material" id="m-pla" value="PLA" checked><label for="m-pla">PLA<small>included</small></label>
+                <input type="radio" name="material" id="m-petg" value="PETG"><label for="m-petg">PETG<small>+€1</small></label>
+              </div>
+            </div>
+            <div>
+              <span class="opt-label">Quantity</span>
+              <div class="stepper">
+                <button type="button" id="qtyMinus" aria-label="Fewer">−</button>
+                <input type="number" id="qty" name="qty" value="1" min="1" max="100" inputmode="numeric" aria-label="Quantity">
+                <button type="button" id="qtyPlus" aria-label="More">+</button>
+              </div>
+            </div>
+
+            <div class="full">
+              <span class="opt-label">Colour</span>
+              <div class="swatches" role="radiogroup" aria-label="Colour">
+                <span class="swatch"><input type="radio" name="colour" id="c-black" value="Black" checked><label for="c-black"><span class="chip" style="background:#232226"></span>Black</label></span>
+                <span class="swatch"><input type="radio" name="colour" id="c-white" value="White"><label for="c-white"><span class="chip" style="background:#f7f6f2"></span>White</label></span>
+                <span class="swatch"><input type="radio" name="colour" id="c-grey" value="Grey"><label for="c-grey"><span class="chip" style="background:#8f8c86"></span>Grey</label></span>
+                <span class="swatch"><input type="radio" name="colour" id="c-natural" value="Natural"><label for="c-natural"><span class="chip" style="background:#ebe1c8"></span>Natural</label></span>
+              </div>
+            </div>
+
+            <div class="full">
+              <span class="opt-label">Strength <span class="hint">· how solid the inside is</span></span>
+              <div class="seg" role="radiogroup" aria-label="Strength">
+                <input type="radio" name="strength" id="s-std" value="standard" checked><label for="s-std">Standard<small>15% fill</small></label>
+                <input type="radio" name="strength" id="s-strong" value="strong"><label for="s-strong">Strong<small>40% fill</small></label>
+                <input type="radio" name="strength" id="s-solid" value="solid"><label for="s-solid">Solid<small>100% fill</small></label>
+              </div>
+            </div>
+
+            <div class="full">
+              <span class="opt-label">Finish</span>
+              <div class="seg" role="radiogroup" aria-label="Finish">
+                <input type="radio" name="quality" id="q-draft" value="draft"><label for="q-draft">Draft<small>0.24 mm</small></label>
+                <input type="radio" name="quality" id="q-std" value="standard" checked><label for="q-std">Standard<small>0.20 mm</small></label>
+                <input type="radio" name="quality" id="q-fine" value="fine"><label for="q-fine">Fine<small>0.16 mm</small></label>
+              </div>
+            </div>
+
+            <div class="full" id="supportsField" hidden>
+              <span class="opt-label">Supports <span class="hint">· your part needs them to print</span></span>
+              <div class="seg" role="radiogroup" aria-label="Support removal">
+                <input type="radio" name="supportRemoval" id="sr-remove" value="remove" checked><label for="sr-remove">We remove them<small>included</small></label>
+                <input type="radio" name="supportRemoval" id="sr-leave" value="leave"><label for="sr-leave">Leave them on<small>you remove them</small></label>
+              </div>
+              <p class="opt-sub" id="supportNote"></p>
+            </div>
+
+            <div class="full">
+              <span class="opt-label">Timelapse video <span class="hint">· free</span></span>
+              <div class="seg" role="radiogroup" aria-label="Timelapse video">
+                <input type="radio" name="timelapse" id="tl-yes" value="yes"><label for="tl-yes">Yes, send it<small>by WhatsApp or email</small></label>
+                <input type="radio" name="timelapse" id="tl-no" value="no" checked><label for="tl-no">No thanks<small>just the part</small></label>
+              </div>
+              <label class="check" id="shareWrap" hidden><input type="checkbox" name="shareOk" id="shareOk"> You can share it on 3D Please's Instagram</label>
+            </div>
+
+            <div class="full">
+              <span class="opt-label">Ready</span>
+              <div class="seg" role="radiogroup" aria-label="Ready">
+                <input type="radio" name="when" id="w-std" value="standard" checked><label for="w-std">2–3 days<small>standard</small></label>
+                <input type="radio" name="when" id="w-rush" value="rush"><label for="w-rush">Next day<small id="rushSmall">included under 4 h</small></label>
+              </div>
+              <p class="opt-sub" id="rushNote" hidden>This job is too long to promise for tomorrow.</p>
+            </div>
           </div>
-        </div>
-        <div class="field-group">
-          <label for="f-name">Your name</label>
-          <input id="f-name" type="text" name="name" autocomplete="name" placeholder="Seán Murphy" required>
-        </div>
-        <div class="field-group">
-          <label for="f-contact">WhatsApp or Email</label>
-          <input id="f-contact" type="text" name="contact" placeholder="For quote and collection details" required>
-        </div>
-        <button class="btn-submit" type="submit">Send quote request →</button>
-      </form>
-      <div class="or-divider">or message us directly</div>
-      <a class="btn-whatsapp" href="https://wa.me/353832059510?text=Hi%2C%20I%27d%20like%20a%203D%20print%20quote" target="_blank" rel="noopener">
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="#25D366" aria-hidden="true" focusable="false"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
-        Message on WhatsApp
-      </a>
-    </div>
-    <div class="success-state" id="successState">
-      <div class="success-icon">✓</div>
-      <div class="success-title">Quote request sent</div>
-      <div class="success-body">You'll hear back within a few hours via WhatsApp or email.<br>Collection is in Cork City.</div>
+
+          <div class="price-box" aria-live="polite">
+            <div class="pb-label" id="pbLabel">Your price</div>
+            <div class="pb-amount" id="pbAmount">—</div>
+            <div class="pb-meta" id="pbMeta"></div>
+            <details class="pb-break" id="pbBreak">
+              <summary>How we priced it</summary>
+              <table><tbody id="pbTable"></tbody></table>
+            </details>
+            <div class="pb-note" id="pbNote">Fixed once a person has checked your file — we only change it if the file has a problem, and we tell you first. Payment by Revolut or bank transfer.</div>
+          </div>
+
+          <div class="field-row">
+            <div class="field-group">
+              <label for="f-name">Your name</label>
+              <input id="f-name" type="text" name="name" autocomplete="name" placeholder="Seán Murphy" required>
+            </div>
+            <div class="field-group">
+              <label for="f-contact">WhatsApp or email</label>
+              <input id="f-contact" type="text" name="contact" placeholder="For updates and collection" required>
+            </div>
+          </div>
+          <input type="text" name="website" class="hp" tabindex="-1" autocomplete="off" aria-hidden="true">
+          <div class="field-group">
+            <label for="f-notes">Anything we should know? <span style="color:var(--muted-light);font-weight:400">(optional)</span></label>
+            <textarea id="f-notes" name="notes" rows="2" placeholder="e.g. needs to fit a 20 mm tube, visible side is the top"></textarea>
+          </div>
+          <button class="btn-submit" type="submit" id="submitBtn" disabled>Order →</button>
+          <p class="form-error" id="formError" hidden></p>
+          <p class="fine-print">We confirm your order by WhatsApp or email before printing.</p>
+        </form>
+
+        <div class="or-divider">or message us directly</div>
+        <a class="btn-whatsapp" href="https://wa.me/353832059510?text=Hi%2C%20I%27d%20like%20a%203D%20print%20quote" target="_blank" rel="noopener">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="#25D366" aria-hidden="true" focusable="false"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+          Message on WhatsApp
+        </a>
+      </div>
+
+      <div class="success-state" id="successState" hidden>
+        <div class="success-icon" id="successIcon">✓</div>
+        <div class="success-title" id="successTitle"></div>
+        <div class="success-body" id="successBody"></div>
+        <div class="success-summary" id="successSummary"></div>
+        <button type="button" class="btn-ghost" id="backBtn">← Back to quote</button>
+      </div>
     </div>
   </div>
 </section>
@@ -585,23 +845,23 @@ footer {
       <span class="section-num">01</span>
       <h2 class="section-label">How it works</h2>
     </div>
-    <p class="section-sub">Three simple steps from your idea to a printed part in your hand.</p>
+    <p class="section-sub">From file to part in your hand, without the back-and-forth.</p>
   </div>
   <div class="steps">
     <div class="step">
       <span class="step-num">Step 01</span>
-      <div class="step-title">Send your file or describe your part</div>
-      <p class="step-body">Upload an STL, STEP, or OBJ via WhatsApp or email. We'll get back to you with a quote.</p>
+      <div class="step-title">Upload your file, see the price</div>
+      <p class="step-body">Drop an STL, 3MF or OBJ into the quote tool. Pick material, colour and strength — the price updates as you go. STEP files are quoted by hand within a few hours.</p>
     </div>
     <div class="step">
       <span class="step-num">Step 02</span>
-      <div class="step-title">Get a fixed quote and confirm</div>
-      <p class="step-body">We reply with a fixed price and ready time. No surprises. Payment via Revolut or cash on collection. We only start once you confirm.</p>
+      <div class="step-title">We check it, then print</div>
+      <p class="step-body">A person checks every file before it prints. If something needs fixing, we tell you before anything happens. Payment by Revolut or bank transfer.</p>
     </div>
     <div class="step">
       <span class="step-num">Step 03</span>
       <div class="step-title">Collect in Cork City</div>
-      <p class="step-body">Pick up in Cork City centre. We confirm the exact address when your order is placed. Postal delivery available on request.</p>
+      <p class="step-body">Pick up in Cork City centre. We confirm the exact address when your order is ready. Postal delivery available on request.</p>
     </div>
   </div>
 </section>
@@ -612,27 +872,27 @@ footer {
       <span class="section-num">02</span>
       <h2 class="section-label">Pricing</h2>
     </div>
-    <p class="section-sub">Transparent fixed pricing. We confirm the final number before any work begins.</p>
+    <p class="section-sub">A guide. Upload your file above for the exact price.</p>
   </div>
   <div class="pricing-grid">
     <div class="price-card">
       <span class="price-badge">Small parts</span>
       <div class="price-name">XS — S</div>
-      <div class="price-amount"><sup>€</sup>12<span class="range"> – €22</span></div>
+      <div class="price-amount"><sup>€</sup>6<span class="range"> – €12</span></div>
       <span class="price-sub">Up to ~80g / under 4 hours</span>
       <hr class="price-divider">
       <ul class="price-features">
         <li>Brackets, clips, hooks</li>
         <li>Replacement parts</li>
         <li>Phone stands, small tools</li>
-        <li>Next-day available</li>
+        <li>Next day included</li>
       </ul>
     </div>
     <div class="price-card featured">
       <span class="price-badge">Most popular</span>
       <div class="price-name">Medium</div>
-      <div class="price-amount"><sup>€</sup>25<span class="range"> – €40</span></div>
-      <span class="price-sub">80–200g / 4–8 hours</span>
+      <div class="price-amount"><sup>€</sup>12<span class="range"> – €24</span></div>
+      <span class="price-sub">80–200g / 4–10 hours</span>
       <hr class="price-divider">
       <ul class="price-features">
         <li>Enclosures and housings</li>
@@ -644,8 +904,8 @@ footer {
     <div class="price-card">
       <span class="price-badge">Large parts</span>
       <div class="price-name">Large</div>
-      <div class="price-amount"><sup>€</sup>45<span class="range">+</span></div>
-      <span class="price-sub">200g+ / 8+ hours</span>
+      <div class="price-amount"><sup>€</sup>24<span class="range">+</span></div>
+      <span class="price-sub">200g+ / 10+ hours</span>
       <hr class="price-divider">
       <ul class="price-features">
         <li>Architectural models</li>
@@ -657,7 +917,7 @@ footer {
   </div>
   <div class="notice" style="margin-bottom: 0;">
     <span class="notice-icon">Rush</span>
-    <p class="notice-text"><strong>Next-day service</strong> is +€5 on any order, subject to capacity.</p>
+    <p class="notice-text"><strong>Next day is included</strong> for prints under 4 hours. Longer jobs: +€3, subject to capacity.</p>
   </div>
 </section>
 
@@ -667,7 +927,7 @@ footer {
       <span class="section-num">03</span>
       <h2 class="section-label">Materials</h2>
     </div>
-    <p class="section-sub">Choose the right material for the job. Unsure? Just describe what you need and we'll recommend.</p>
+    <p class="section-sub">Choose the right material for the job. Unsure? Add a note to your order and we'll recommend.</p>
   </div>
   <div class="materials-grid">
     <div class="mat-cell">
@@ -680,17 +940,11 @@ footer {
       <div class="mat-name">PETG</div>
       <span class="mat-best">Functional parts</span>
       <p class="mat-desc">Stronger and more heat-resistant than PLA. Good for parts that need to handle stress or warmer environments.</p>
-      <span class="mat-tag">+€4 flat</span>
-    </div>
-    <div class="mat-cell">
-      <div class="mat-name">TPU</div>
-      <span class="mat-best">Flexible parts</span>
-      <p class="mat-desc">Rubber-like flexibility. Ideal for gaskets, grips, phone cases, or anything that needs to bend and return to shape.</p>
-      <span class="mat-tag">+€8 flat</span>
+      <span class="mat-tag">+€1 flat</span>
     </div>
     <div class="mat-cell">
       <div class="mat-name">Colours</div>
-      <span class="mat-best">All materials</span>
+      <span class="mat-best">Both materials</span>
       <p class="mat-desc">White, black, grey, and natural always in stock. Other colours on request — 1–2 day lead time for filament sourcing.</p>
       <span class="mat-tag">Ask us</span>
     </div>
@@ -700,15 +954,15 @@ footer {
 <footer>
   <div class="footer-grid">
     <div>
-      <a class="footer-brand-logo" href="/" aria-label="3D Please — home">
-        <img src="/logo.png" width="560" height="144" alt="3D Please" class="logo-img logo-img-footer">
+      <a class="footer-brand-logo" href="#" aria-label="3D Please — home">
+        <img src="logo.png" width="560" height="144" alt="3D Please" class="logo-img logo-img-footer">
       </a>
       <p class="footer-tagline">Local 3D printing for Cork City. Prototypes, parts, custom objects. No corporate nonsense.</p>
     </div>
     <div>
       <span class="footer-col-title">Order</span>
       <ul class="footer-links">
-        <li><a href="#order">Request a quote</a></li>
+        <li><a href="#order">Instant quote</a></li>
         <li><a href="https://wa.me/353832059510" target="_blank" rel="noopener">WhatsApp</a></li>
         <li><a href="mailto:hello@3dplease.ie">hello@3dplease.ie</a></li>
       </ul>
@@ -728,29 +982,575 @@ footer {
   </div>
 </footer>
 
-<script>
-const form = document.getElementById('quoteForm');
-if (form) {
-  form.addEventListener('submit', async function(e) {
-    e.preventDefault();
-    const btn = form.querySelector('button[type="submit"]');
-    btn.textContent = 'Sending...';
-    btn.disabled = true;
-    try {
-      const res = await fetch(form.action, { method: 'POST', body: new FormData(form), headers: { 'Accept': 'application/json' } });
-      if (res.ok) {
-        document.getElementById('orderCard').style.display = 'none';
-        document.getElementById('successState').style.display = 'block';
-      } else {
-        btn.textContent = 'Something went wrong — try WhatsApp';
-        btn.disabled = false;
-      }
-    } catch {
-      btn.textContent = 'Something went wrong — try WhatsApp';
-      btn.disabled = false;
+<script type="module">
+/* ============================================================
+   PRICING & PRINTER SETTINGS — tune these to your real numbers.
+   Anchored on a real job: 8 g / ~20 min sold at €6 (customer came back).
+   Minimum €6 · ~80 g ≈ €12.50 · ~200 g ≈ €23.50 · printer hour €0.80.
+   ============================================================ */
+const CONFIG = {
+  endpoint: 'https://script.google.com/macros/s/AKfycbw1RyOXdlsI_oeAz9UBv2dqffAALeGPZ5-u-6te8_-24PM92weWlMGPjPutjg_ymxyV/exec', // order receiver (Google Apps Script). Empty = preview mode: nothing is sent.
+  baseFee: 4.50,           // € per order: messages, file check, slicing, handover — your time
+  perPiece: 0.50,          // € per piece: removal, clean-up, bagging
+  perGram: 0.05,           // € per gram, supports included (~2× filament cost incl. waste)
+  perHour: 0.80,           // € per printer hour (power + wear + the printer being busy) — raise first when there's a queue
+  minPrice: 6.00,          // € minimum order (before PETG / next-day extras)
+  petgFlat: 1.00,          // € flat per order (glue stick, slower print)
+  rushFee: 3.00,           // € next day, only for jobs longer than rushFreeHours
+  rushFreeHours: 4,        // next day included for prints up to this long
+  rushMaxHours: 14,        // longer jobs can't be promised for tomorrow
+  roundTo: 0.50,           // round final price up to this step
+  density: { PLA: 1.24, PETG: 1.27 },                    // g/cm³
+  gramsPerHour: { draft: 23, standard: 19.5, fine: 16 }, // P2S throughput by layer height (0.24 / 0.20 / 0.16)
+  materialSpeed: { PLA: 1.0, PETG: 1.0 },                // same print time in PLA and PETG on these profiles
+  // Calibrated on a real job (backplate, lying flat, Bambu Studio):
+  // PLA 0.16 mm → 108 g, 6 h 49 min · 0.20 mm → 5 h 38 min in both PLA and PETG. 0.24 is extrapolated.
+  infill: { standard: 0.15, strong: 0.40, solid: 1.0 },
+  shellMm: 0.9,            // average walls + top/bottom thickness, mm
+  supportDensity: 0.10,    // support volume fill (tree supports are sparse)
+  overhangNz: -0.85,       // downward faces flatter than ~30° from horizontal need support
+  warmupHours: 0.12,       // prep: heating, levelling (~7 min on the P2S)
+  bedMm: 256,              // Bambu Lab P2S: 256 × 256 × 256 mm
+  maxFileMB: 25,           // keep ≤ 25: the order receiver (Apps Script) has a request size limit
+  whatsapp: '353832059510'
+};
+const LABELS = {
+  strength: { standard: 'Standard · 15%', strong: 'Strong · 40%', solid: 'Solid · 100%' },
+  finish: { draft: 'Draft · 0.24 mm', standard: 'Standard · 0.20 mm', fine: 'Fine · 0.16 mm' }
+};
+const COLOURS = { Black: 0x3a393e, White: 0xf2f0ea, Grey: 0x9a968f, Natural: 0xe6dcc2 };
+
+/* ---------- DOM ---------- */
+const $ = id => document.getElementById(id);
+const form = $('quoteForm'), fileInput = $('fileInput'), dropzone = $('dropzone');
+const previewMode = !CONFIG.endpoint;
+if (previewMode) $('previewStrip').hidden = false;
+
+const state = { file: null, ext: '', positions: null, analysis: null, manual: null, quote: null };
+
+/* ---------- File intake ---------- */
+['dragenter', 'dragover'].forEach(ev => dropzone.addEventListener(ev, e => { e.preventDefault(); dropzone.classList.add('drag'); }));
+['dragleave', 'drop'].forEach(ev => dropzone.addEventListener(ev, e => { e.preventDefault(); dropzone.classList.remove('drag'); }));
+dropzone.addEventListener('drop', e => { const f = e.dataTransfer.files[0]; if (f) handleFile(f); });
+dropzone.addEventListener('keydown', e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); fileInput.click(); } });
+window.addEventListener('dragover', e => e.preventDefault());
+window.addEventListener('drop', e => e.preventDefault());
+fileInput.addEventListener('change', () => { const f = fileInput.files[0]; if (f) handleFile(f); fileInput.value = ''; });
+$('changeFile').addEventListener('click', () => fileInput.click());
+
+async function handleFile(file) {
+  const ext = (file.name.split('.').pop() || '').toLowerCase();
+  if (!['stl', '3mf', 'obj', 'step', 'stp'].includes(ext)) {
+    showUploadError('That file type isn\'t supported. Use STL, 3MF, OBJ or STEP.'); return;
+  }
+  if (file.size > CONFIG.maxFileMB * 1024 * 1024) {
+    showUploadError(`That file is over ${CONFIG.maxFileMB} MB. Send it on WhatsApp or email instead.`); return;
+  }
+  Object.assign(state, { file, ext, positions: null, analysis: null, manual: null, quote: null });
+  $('uploadError')?.remove();
+  $('uploadStep').hidden = true;
+  form.hidden = false;
+  $('fileName').textContent = file.name;
+  $('specs').hidden = true;
+  $('alerts').innerHTML = '';
+  $('units').value = '1';
+  setViewerMsg('<div class="spinner"></div><span>Reading your file…</span>');
+  clearModel();
+  render();
+
+  if (ext === 'step' || ext === 'stp') {
+    state.manual = 'step';
+    setViewerMsg('<span style="font-size:28px">⬡</span><span>STEP file received.<br>We quote these by hand — usually within a few hours.</span>');
+    render(); return;
+  }
+
+  try {
+    await nextFrame();
+    state.positions = await parseFile(file, ext);
+    if (!state.positions || state.positions.length < 9) throw new Error('empty');
+    analyse();
+    state.shownOrient = state.analysis.orient;
+    await showModel(rotated(state.positions, ORIENTS[state.analysis.orient].m));
+  } catch (err) {
+    console.error(err);
+    state.manual = 'unreadable';
+    setViewerMsg('<span style="font-size:28px">?</span><span>We couldn\'t read this file automatically.<br>Send it anyway — we\'ll check it and quote by hand.</span>');
+  }
+  render();
+}
+
+function showUploadError(msg) {
+  if ($('uploadStep').hidden) { // already looking at a model: show it there
+    $('alerts').insertAdjacentHTML('afterbegin', `<div class="alert">${msg}</div>`); return;
+  }
+  let el = $('uploadError');
+  if (!el) { el = document.createElement('p'); el.id = 'uploadError'; el.className = 'alert'; $('uploadStep').appendChild(el); }
+  el.textContent = msg;
+}
+
+/* ---------- Parsing (three.js loaded only when needed) ---------- */
+let THREE = null;
+async function loadThree() { if (!THREE) THREE = await import('three'); return THREE; }
+
+async function parseFile(file, ext) {
+  await loadThree();
+  const buf = await file.arrayBuffer();
+  let geoms = [];
+  if (ext === 'stl') {
+    const { STLLoader } = await import('three/addons/loaders/STLLoader.js');
+    geoms = [new STLLoader().parse(buf)];
+  } else if (ext === '3mf') {
+    const { ThreeMFLoader } = await import('three/addons/loaders/3MFLoader.js');
+    geoms = geomsFromGroup(new ThreeMFLoader().parse(buf));
+  } else if (ext === 'obj') {
+    const { OBJLoader } = await import('three/addons/loaders/OBJLoader.js');
+    geoms = geomsFromGroup(new OBJLoader().parse(new TextDecoder().decode(buf)));
+    geoms.forEach(g => g.rotateX(Math.PI / 2)); // OBJ is usually Y-up; printing is Z-up
+  }
+  let total = 0;
+  geoms.forEach(g => total += g.attributes.position.array.length);
+  const out = new Float32Array(total);
+  let off = 0;
+  geoms.forEach(g => { out.set(g.attributes.position.array, off); off += g.attributes.position.array.length; g.dispose(); });
+  return out;
+}
+
+function geomsFromGroup(group) {
+  const list = [];
+  group.updateMatrixWorld(true);
+  group.traverse(o => {
+    if (o.isMesh && o.geometry?.attributes?.position) {
+      let g = o.geometry.clone();
+      g.applyMatrix4(o.matrixWorld);
+      if (g.index) g = g.toNonIndexed();
+      list.push(g);
     }
   });
+  return list;
 }
+
+/* ---------- Geometry analysis (mm, Z up) ---------- */
+function analyseMesh(p, s) {
+  let vol = 0, area = 0;
+  let minX = Infinity, minY = Infinity, minZ = Infinity, maxX = -Infinity, maxY = -Infinity, maxZ = -Infinity;
+  for (let i = 0; i < p.length; i += 9) {
+    const ax = p[i] * s, ay = p[i + 1] * s, az = p[i + 2] * s;
+    const bx = p[i + 3] * s, by = p[i + 4] * s, bz = p[i + 5] * s;
+    const cx = p[i + 6] * s, cy = p[i + 7] * s, cz = p[i + 8] * s;
+    const ux = bx - ax, uy = by - ay, uz = bz - az, vx = cx - ax, vy = cy - ay, vz = cz - az;
+    const nx = uy * vz - uz * vy, ny = uz * vx - ux * vz, nz = ux * vy - uy * vx;
+    area += Math.sqrt(nx * nx + ny * ny + nz * nz) / 2;
+    vol += (ax * (by * cz - bz * cy) - ay * (bx * cz - bz * cx) + az * (bx * cy - by * cx)) / 6;
+    if (ax < minX) minX = ax; if (bx < minX) minX = bx; if (cx < minX) minX = cx;
+    if (ay < minY) minY = ay; if (by < minY) minY = by; if (cy < minY) minY = cy;
+    if (az < minZ) minZ = az; if (bz < minZ) minZ = bz; if (cz < minZ) minZ = cz;
+    if (ax > maxX) maxX = ax; if (bx > maxX) maxX = bx; if (cx > maxX) maxX = cx;
+    if (ay > maxY) maxY = ay; if (by > maxY) maxY = by; if (cy > maxY) maxY = cy;
+    if (az > maxZ) maxZ = az; if (bz > maxZ) maxZ = bz; if (cz > maxZ) maxZ = cz;
+  }
+  // Supports, for each of the 6 flat orientations (±X, ±Y, ±Z up):
+  // a column under every downward-facing, flat-ish face, down to the bed.
+  const mins = [minX, minY, minZ], maxs = [maxX, maxY, maxZ];
+  const sup = [0, 0, 0, 0, 0, 0];            // index = axis*2 + (0: +up, 1: −up)
+  for (let i = 0; i < p.length; i += 9) {
+    const ax = p[i] * s, ay = p[i + 1] * s, az = p[i + 2] * s;
+    const bx = p[i + 3] * s, by = p[i + 4] * s, bz = p[i + 5] * s;
+    const cx = p[i + 6] * s, cy = p[i + 7] * s, cz = p[i + 8] * s;
+    const ux = bx - ax, uy = by - ay, uz = bz - az, vx = cx - ax, vy = cy - ay, vz = cz - az;
+    const n = [uy * vz - uz * vy, uz * vx - ux * vz, ux * vy - uy * vx];
+    const len = Math.sqrt(n[0] * n[0] + n[1] * n[1] + n[2] * n[2]);
+    if (!len) continue;
+    const c = [(ax + bx + cx) / 3, (ay + by + cy) / 3, (az + bz + cz) / 3];
+    for (let k = 0; k < 3; k++) {
+      if (n[k] / len < CONFIG.overhangNz) {          // faces down when axis k points up
+        const h = c[k] - mins[k]; if (h > 0.5) sup[k * 2] += (-n[k] / 2) * h;
+      } else if (-n[k] / len < CONFIG.overhangNz) {  // faces down when axis k points down
+        const h = maxs[k] - c[k]; if (h > 0.5) sup[k * 2 + 1] += (n[k] / 2) * h;
+      }
+    }
+  }
+  const raw = [maxX - minX, maxY - minY, maxZ - minZ];
+  // support can only live in the empty space of the bounding box
+  const cap = Math.max(0, raw[0] * raw[1] * raw[2] - Math.abs(vol));
+  for (let j = 0; j < 6; j++) sup[j] = Math.min(sup[j], cap);
+  // keep the file's own orientation unless another one clearly needs less support
+  const asIs = 4; // +Z up
+  let best = asIs;
+  for (let j = 0; j < 6; j++) if (sup[j] < sup[best]) best = j;
+  if (sup[asIs] <= sup[best] * 1.1 + 50) best = asIs;
+  const ORIENT = ORIENTS[best];
+  const m = ORIENT.m;
+  const size = [0, 1, 2].map(r => Math.abs(m[r * 3]) * raw[0] + Math.abs(m[r * 3 + 1]) * raw[1] + Math.abs(m[r * 3 + 2]) * raw[2]);
+  return { volume: Math.abs(vol), area, size, support: sup[best], orient: best, supportAsIs: sup[asIs], triangles: p.length / 9 };
+}
+
+// Rotation (row-major 3×3) that brings each orientation's "up" axis to +Z
+const ORIENTS = [
+  { label: 'on its end',   m: [0, 0, -1,  0, 1, 0,  1, 0, 0] },   // +X up
+  { label: 'on its end',   m: [0, 0, 1,   0, 1, 0, -1, 0, 0] },   // −X up
+  { label: 'on its side',  m: [1, 0, 0,   0, 0, -1, 0, 1, 0] },   // +Y up
+  { label: 'on its side',  m: [1, 0, 0,   0, 0, 1,  0, -1, 0] },  // −Y up
+  { label: 'as uploaded',  m: [1, 0, 0,   0, 1, 0,  0, 0, 1] },   // +Z up
+  { label: 'upside down',  m: [1, 0, 0,   0, -1, 0, 0, 0, -1] },  // −Z up
+];
+function rotated(p, m) {
+  const out = new Float32Array(p.length);
+  for (let i = 0; i < p.length; i += 3) {
+    const x = p[i], y = p[i + 1], z = p[i + 2];
+    out[i] = m[0] * x + m[1] * y + m[2] * z;
+    out[i + 1] = m[3] * x + m[4] * y + m[5] * z;
+    out[i + 2] = m[6] * x + m[7] * y + m[8] * z;
+  }
+  return out;
+}
+
+function openEdgeCount(p) {
+  const n = p.length / 9;
+  if (n > 400000) return null; // skip on very large meshes
+  const vmap = new Map(); const idx = new Uint32Array(n * 3); let next = 0;
+  for (let v = 0; v < n * 3; v++) {
+    const k = Math.round(p[v * 3] * 1e3) + ',' + Math.round(p[v * 3 + 1] * 1e3) + ',' + Math.round(p[v * 3 + 2] * 1e3);
+    let id = vmap.get(k); if (id === undefined) { id = next++; vmap.set(k, id); } idx[v] = id;
+  }
+  const edges = new Map();
+  for (let t = 0; t < n; t++) for (let e = 0; e < 3; e++) {
+    let a = idx[t * 3 + e], b = idx[t * 3 + (e + 1) % 3];
+    if (a === b) continue; if (a > b) { const x = a; a = b; b = x; }
+    const key = a * next + b; edges.set(key, (edges.get(key) || 0) + 1);
+  }
+  let open = 0; for (const c of edges.values()) if (c === 1) open++;
+  return open;
+}
+
+function analyse() {
+  const s = parseFloat($('units').value);
+  state.analysis = analyseMesh(state.positions, s);
+  if (state.openEdges === undefined || state.lastPositions !== state.positions) {
+    state.openEdges = openEdgeCount(state.positions);
+    state.lastPositions = state.positions;
+  }
+  const a = state.analysis;
+  state.manual = Math.max(...a.size) > CONFIG.bedMm ? 'too_big' : null;
+
+  $('specs').hidden = false;
+  $('dims').textContent = a.size.map(v => v < 10 ? v.toFixed(1) : Math.round(v)).join(' × ') + ' mm';
+
+  const alerts = [];
+  const maxDim = Math.max(...a.size);
+  if (a.orient !== 4) {
+    const how = a.orient === 5 ? 'upside down' : a.size[2] <= Math.min(a.size[0], a.size[1]) ? 'lying flat' : 'on its side';
+    a.orientLabel = how;
+    alerts.push({ cls: 'alert note', t: `We'll print this ${how} so it needs less support — your price already assumes that.` });
+  }
+  if (state.manual === 'too_big') alerts.push(`This is bigger than our print area (${CONFIG.bedMm} mm). We can print it in parts — send it and we'll quote it by hand.`);
+  else if (maxDim < 5) alerts.push(`This looks very small (${maxDim.toFixed(1)} mm across). If your file is in cm or inches, change the units above.`);
+  if (state.openEdges) alerts.push('Your file has a few gaps in the surface. We\'ll check it before printing — if that changes the price, we\'ll tell you first.');
+  $('alerts').innerHTML = alerts.map(x => typeof x === 'string' ? `<div class="alert">${x}</div>` : `<div class="${x.cls}">${x.t}</div>`).join('');
+}
+$('units').addEventListener('change', async () => {
+  if (!state.positions) return;
+  analyse(); render();
+  if (state.analysis.orient !== state.shownOrient) {
+    state.shownOrient = state.analysis.orient;
+    await showModel(rotated(state.positions, ORIENTS[state.analysis.orient].m));
+  }
+});
+
+/* ---------- Pricing ---------- */
+function readOpts() {
+  const fd = new FormData(form);
+  const qty = Math.min(100, Math.max(1, parseInt($('qty').value, 10) || 1));
+  return { material: fd.get('material'), colour: fd.get('colour'), strength: fd.get('strength'),
+           quality: fd.get('quality'), rush: fd.get('when') === 'rush', removeSupports: fd.get('supportRemoval') !== 'leave',
+           timelapse: fd.get('timelapse') === 'yes', shareOk: fd.get('timelapse') === 'yes' && $('shareOk').checked, qty };
+}
+
+function computeQuote(a, o) {
+  const shell = Math.min(a.volume, a.area * CONFIG.shellMm);
+  const part = shell + Math.max(0, a.volume - shell) * CONFIG.infill[o.strength];
+  const supportVol = a.support * CONFIG.supportDensity;   // printed whenever the part needs them
+  const neededSupportGrams = supportVol / 1000 * CONFIG.density[o.material];
+  const gramsEach = (part + supportVol) / 1000 * CONFIG.density[o.material];
+  const supportGramsEach = supportVol / 1000 * CONFIG.density[o.material];
+  const grams = gramsEach * o.qty;
+  const hours = CONFIG.warmupHours + grams / (CONFIG.gramsPerHour[o.quality] * CONFIG.materialSpeed[o.material]);
+  const material = grams * CONFIG.perGram;
+  const machine = hours * CONFIG.perHour;
+  const setup = CONFIG.baseFee + CONFIG.perPiece * o.qty;
+  const raw = setup + material + machine;
+  const topUp = Math.max(0, CONFIG.minPrice - raw);
+  const petg = o.material === 'PETG' ? CONFIG.petgFlat : 0;
+  const rushAllowed = hours <= CONFIG.rushMaxHours;
+  const rushFree = hours <= CONFIG.rushFreeHours;
+  const rush = o.rush && rushAllowed && !rushFree ? CONFIG.rushFee : 0;
+  const pre = raw + topUp + petg + rush;
+  const total = Math.ceil(pre / CONFIG.roundTo - 1e-9) * CONFIG.roundTo;
+  return { gramsEach, supportGramsEach, neededSupportGrams, grams, hours, setup, material, machine, topUp, petg, rush, rushAllowed, rushFree,
+           rounding: total - pre, total };
+}
+
+const eur = v => '€' + v.toFixed(2);
+const fmtHours = h => { const m = Math.round(h * 60); return m < 60 ? `${m} min` : `${Math.floor(m / 60)} h ${String(m % 60).padStart(2, '0')} min`; };
+
+function render() {
+  const o = readOpts();
+  const btn = $('submitBtn');
+  const amount = $('pbAmount');
+  $('rushNote').hidden = true;
+  $('supportsField').hidden = true;
+  const tl = new FormData(form).get('timelapse') === 'yes';
+  $('shareWrap').hidden = !tl;
+  if (!tl) $('shareOk').checked = false;
+  $('w-rush').disabled = false;
+
+  if (state.manual) {
+    state.quote = null;
+    amount.textContent = 'Quoted by hand';
+    amount.classList.add('manual');
+    $('pbLabel').textContent = 'Your price';
+    $('pbMeta').textContent = { step: 'STEP files are checked by a person', unreadable: 'We\'ll open it in our slicer', too_big: 'Needs splitting into parts' }[state.manual];
+    $('pbBreak').hidden = true;
+    $('pbNote').textContent = 'Send it with your options and we\'ll reply with a fixed price, usually within a few hours.';
+    btn.textContent = 'Send for a price →';
+    btn.disabled = false;
+    return;
+  }
+  if (!state.analysis) {
+    amount.textContent = '—'; amount.classList.remove('manual');
+    $('pbMeta').textContent = ''; $('pbBreak').hidden = true;
+    btn.textContent = 'Order →'; btn.disabled = true;
+    return;
+  }
+
+  const q = computeQuote(state.analysis, o);
+  state.quote = q;
+  $('rushSmall').textContent = q.rushFree ? 'included' : `+€${CONFIG.rushFee} · if capacity`;
+  if (!q.rushAllowed) {
+    $('w-rush').disabled = true;
+    if (o.rush) { $('w-std').checked = true; return render(); }
+    $('rushNote').hidden = false;
+  }
+  amount.classList.remove('manual');
+  amount.textContent = eur(q.total);
+  $('pbLabel').textContent = o.qty > 1 ? `Your price · ${o.qty} pieces` : 'Your price';
+  const needs = q.neededSupportGrams > 0.5;
+  state.needsSupports = needs;
+  const sup = needs ? 'with supports' : 'no supports needed';
+  $('supportsField').hidden = !needs;
+  $('supportNote').textContent = o.removeSupports
+    ? 'We snap them off and clean the contact points before you collect.'
+    : 'Handy for delicate parts or if you\'d rather do it yourself. Same price.';
+  $('pbMeta').textContent = `≈ ${Math.max(1, Math.round(q.grams))} g · ≈ ${fmtHours(q.hours)} printing · ${sup}`;
+  const g = Math.max(1, Math.round(q.grams));
+  const rows = q.topUp > 0.004
+    ? [[`Print · ${g} g · ${fmtHours(q.hours)} <span style="opacity:.7">(minimum order)</span>`, CONFIG.minPrice]]
+    : [[o.qty > 1 ? `Setup & handling · ${o.qty} pieces` : 'Setup & handling', q.setup], [`Material · ${g} g`, q.material], [`Printer time · ${fmtHours(q.hours)}`, q.machine]];
+  if (q.petg) rows.push(['PETG', q.petg]);
+  if (q.rush) rows.push(['Next day', q.rush]);
+  else if (o.rush && q.rushFree) rows.push(['Next day · included', 0]);
+  if (q.rounding > 0.004) rows.push(['Rounded up', q.rounding]);
+  $('pbTable').innerHTML = rows.map(([k, v]) => `<tr><td>${k}</td><td>${eur(v)}</td></tr>`).join('') +
+    `<tr><td style="color:var(--paper);font-weight:600">Total</td><td style="font-weight:600">${eur(q.total)}</td></tr>`;
+  $('pbBreak').hidden = false;
+  $('pbNote').textContent = 'Fixed once a person has checked your file — we only change it if the file has a problem, and we tell you first. Payment by Revolut or bank transfer.';
+  btn.textContent = `Order for ${eur(q.total)} →`;
+  btn.disabled = false;
+}
+
+form.addEventListener('change', e => {
+  if (e.target.name === 'colour') setModelColour(e.target.value);
+  render();
+});
+$('qty').addEventListener('input', render);
+$('qtyMinus').addEventListener('click', () => { $('qty').value = Math.max(1, (parseInt($('qty').value, 10) || 1) - 1); render(); });
+$('qtyPlus').addEventListener('click', () => { $('qty').value = Math.min(100, (parseInt($('qty').value, 10) || 1) + 1); render(); });
+
+/* ---------- 3D viewer ---------- */
+let V = null;
+function setViewerMsg(html) { const m = $('viewerMsg'); m.innerHTML = html; m.hidden = false; $('viewerHint').hidden = true; }
+function nextFrame() { return new Promise(r => requestAnimationFrame(() => setTimeout(r, 0))); }
+
+async function initViewer() {
+  if (V) return V;
+  await loadThree();
+  const { OrbitControls } = await import('three/addons/controls/OrbitControls.js');
+  const el = $('viewer');
+  const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+  renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+  el.prepend(renderer.domElement);
+  const scene = new THREE.Scene();
+  const camera = new THREE.PerspectiveCamera(35, 1, 0.1, 10000);
+  scene.add(new THREE.HemisphereLight(0xffffff, 0xcfcfd4, 2.1));
+  const key = new THREE.DirectionalLight(0xffffff, 2.0); key.position.set(1, 2, 1.4); scene.add(key);
+  const rim = new THREE.DirectionalLight(0xffffff, 0.7); rim.position.set(-1.5, 0.6, -1.2); scene.add(rim);
+  const controls = new OrbitControls(camera, renderer.domElement);
+  Object.assign(controls, { enableDamping: true, enablePan: false, autoRotate: true, autoRotateSpeed: 1.6 });
+  controls.addEventListener('start', () => { controls.autoRotate = false; });
+  const holder = new THREE.Group(); scene.add(holder);
+  const resize = () => {
+    const w = el.clientWidth, h = el.clientHeight; if (!w || !h) return;
+    renderer.setSize(w, h, false); camera.aspect = w / h; camera.updateProjectionMatrix();
+  };
+  new ResizeObserver(resize).observe(el); resize();
+  renderer.setAnimationLoop(() => { controls.update(); renderer.render(scene, camera); });
+  V = { renderer, scene, camera, controls, holder, mesh: null, resize };
+  return V;
+}
+
+function clearModel() {
+  if (!V) return;
+  V.holder.children.slice().forEach(c => { V.holder.remove(c); c.traverse(o => { o.geometry?.dispose(); o.material?.dispose?.(); }); });
+  V.mesh = null;
+}
+
+async function showModel(positions) {
+  try { await initViewer(); } catch (e) {
+    console.warn(e);
+    setViewerMsg('<span>3D preview isn\'t available on this device —<br>your price below is still accurate.</span>');
+    return;
+  }
+  clearModel();
+  const g = new THREE.BufferGeometry();
+  g.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+  g.computeVertexNormals();
+  const colour = new FormData(form).get('colour');
+  const mesh = new THREE.Mesh(g, new THREE.MeshStandardMaterial({ color: COLOURS[colour], roughness: 0.62, metalness: 0 }));
+  mesh.rotation.x = -Math.PI / 2;                 // print Z-up → viewer Y-up
+  mesh.updateMatrixWorld(true);
+  const box = new THREE.Box3().setFromObject(mesh);
+  const size = box.getSize(new THREE.Vector3()), c = box.getCenter(new THREE.Vector3());
+  mesh.position.set(-c.x, -box.min.y, -c.z);     // sit it on the plate, centred
+  V.holder.add(mesh); V.mesh = mesh;
+
+  const r = Math.max(size.x, size.y, size.z) || 1;
+  const grid = new THREE.GridHelper(Math.max(size.x, size.z) * 2.2, 14, 0xc4c4ca, 0xdedee3);
+  grid.position.y = -r * 0.002;
+  V.holder.add(grid);
+
+  const cam = V.camera;
+  const dist = (r / 2) / Math.tan(THREE.MathUtils.degToRad(cam.fov / 2)) * 1.9;
+  cam.near = r / 200; cam.far = r * 200; cam.updateProjectionMatrix();
+  V.controls.target.set(0, size.y / 2, 0);
+  cam.position.set(dist * 0.72, size.y / 2 + dist * 0.5, dist * 0.82);
+  V.controls.autoRotate = true;
+  V.controls.update();
+  V.resize();
+  $('viewerMsg').hidden = true;
+  $('viewerHint').hidden = false;
+}
+
+function setModelColour(name) { if (V?.mesh) V.mesh.material.color.setHex(COLOURS[name]); }
+
+/* ---------- Order ---------- */
+function buildOrder() {
+  const o = readOpts();
+  const fd = new FormData(form);
+  const a = state.analysis, q = state.quote;
+  return {
+    file: { name: state.file.name, sizeKB: Math.round(state.file.size / 1024), type: state.ext },
+    options: { material: o.material, colour: o.colour, strength: o.strength, finish: o.quality, supports: !state.needsSupports ? 'Not needed' : o.removeSupports ? 'We remove them' : 'Leave them on', timelapse: o.timelapse ? (o.shareOk ? 'Yes · OK to share on Instagram' : 'Yes · private') : 'No', quantity: o.qty, ready: o.rush ? 'Next day' : '2–3 days' },
+    model: a ? { sizeMm: a.size.map(v => +v.toFixed(1)), volumeCm3: +(a.volume / 1000).toFixed(2), units: $('units').selectedOptions[0].text, orientation: a.orientLabel || 'as uploaded' } : null,
+    quote: q ? { total: q.total, grams: Math.round(q.grams), hours: +q.hours.toFixed(2) } : { manual: state.manual },
+    customer: { name: fd.get('name').trim(), contact: fd.get('contact').trim(), notes: fd.get('notes').trim() },
+    website: fd.get('website') || '',   // honeypot: real people leave this empty
+    page: location.href, createdAt: new Date().toISOString()
+  };
+}
+
+function fileToBase64(file) {
+  return new Promise((res, rej) => {
+    const r = new FileReader();
+    r.onload = () => res(String(r.result).split(',')[1]);
+    r.onerror = () => rej(r.error);
+    r.readAsDataURL(file);
+  });
+}
+
+form.addEventListener('submit', async e => {
+  e.preventDefault();
+  $('formError').hidden = true;
+  if (!state.file) return;
+  const name = $('f-name'), contact = $('f-contact');
+  for (const el of [name, contact]) {
+    if (!el.value.trim()) { el.focus(); showFormError(el === name ? 'Add your name.' : 'Add a WhatsApp number or email so we can confirm.'); return; }
+  }
+  const order = buildOrder();
+  if (previewMode) { showPreviewResult(order); return; }
+
+  const btn = $('submitBtn'); const label = btn.textContent;
+  btn.disabled = true; btn.textContent = 'Uploading your file…';
+  try {
+    const fileBase64 = await fileToBase64(state.file);
+    const res = await fetch(CONFIG.endpoint, {
+      method: 'POST',
+      headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+      body: JSON.stringify({ ...order, fileBase64 })
+    });
+    const data = await res.json();
+    if (!data.ok) throw new Error(data.error || 'failed');
+    if (typeof gtag === 'function') gtag('event', 'generate_lead', { currency: 'EUR', value: order.quote.total || 0 });
+    showSuccess(order, data.ref);
+  } catch (err) {
+    console.error(err);
+    showFormError('Something went wrong sending your file. Try again, or send it on WhatsApp.');
+    btn.disabled = false; btn.textContent = label;
+  }
+});
+
+function showFormError(msg) { const el = $('formError'); el.textContent = msg; el.hidden = false; }
+
+function summaryRows(order) {
+  const q = order.quote;
+  const rows = [
+    ['File', order.file.name],
+    ['Material', `${order.options.material} · ${order.options.colour}`],
+    ['Strength', LABELS.strength[order.options.strength]],
+    ['Finish', LABELS.finish[order.options.finish]],
+    ['Supports', order.options.supports],
+    ['Timelapse', order.options.timelapse],
+    ['Quantity', order.options.quantity],
+    ['Ready', order.options.ready],
+    ['Price', q.total ? eur(q.total) : 'Quoted by hand'],
+    ['Name', order.customer.name],
+    ['Contact', order.customer.contact],
+  ];
+  if (order.customer.notes) rows.push(['Notes', order.customer.notes]);
+  return rows.map(([k, v]) => `<div><span>${k}</span><span>${escapeHtml(String(v))}</span></div>`).join('');
+}
+function escapeHtml(s) { return s.replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c])); }
+
+function showPreviewResult(order) {
+  $('quoteFlow').hidden = true; $('successState').hidden = false;
+  state.submitted = false; $('backBtn').textContent = '← Back to quote';
+  $('cardTitle').textContent = 'Preview';
+  $('successIcon').textContent = 'i';
+  $('successTitle').textContent = 'Preview — nothing was sent';
+  $('successBody').textContent = 'On the live site, this order and the file itself arrive with 3D Please, and the customer sees a reference number.';
+  $('successSummary').innerHTML = summaryRows(order);
+}
+function showSuccess(order, ref) {
+  $('quoteFlow').hidden = true; $('successState').hidden = false;
+  state.submitted = true; $('backBtn').textContent = 'Get another quote';
+  $('cardTitle').textContent = 'Order received';
+  $('successIcon').textContent = '✓';
+  $('successTitle').textContent = ref ? `Got it — order ${ref}` : 'Got it';
+  $('successBody').textContent = 'We\'ll check your file and confirm by WhatsApp or email, usually within a few hours. Collection is in Cork City.';
+  $('successSummary').innerHTML = summaryRows(order);
+}
+$('backBtn').addEventListener('click', () => {
+  $('successState').hidden = true; $('quoteFlow').hidden = false;
+  $('cardTitle').textContent = 'Instant quote';
+  if (state.submitted) {            // order sent: start a fresh quote, keep name and contact
+    state.submitted = false;
+    Object.assign(state, { file: null, ext: '', positions: null, analysis: null, manual: null, quote: null });
+    clearModel();
+    $('f-notes').value = '';
+    form.hidden = true;
+    $('uploadStep').hidden = false;
+  }
+  render();
+  V?.resize();
+});
 </script>
 </body>
 </html>
