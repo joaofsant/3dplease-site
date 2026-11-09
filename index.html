@@ -948,7 +948,7 @@ footer { background: var(--surface); padding: 56px 64px 32px; border-top: 1px so
     <div class="step">
       <span class="step-num">Step 01</span>
       <div class="step-title">Upload your file, see the price</div>
-      <p class="step-body">Drop an STL, 3MF or OBJ into the quote tool. Pick material, colour and strength — the price updates as you go. STEP files are quoted by hand within a few hours.</p>
+      <p class="step-body">Drop an STL, 3MF, OBJ or STEP file into the quote tool. Pick material, colour and strength — the price updates as you go.</p>
     </div>
     <div class="step">
       <span class="step-num">Step 02</span>
@@ -1125,7 +1125,7 @@ footer { background: var(--surface); padding: 56px 64px 32px; border-top: 1px so
   <div class="faq">
     <details>
       <summary>What files can I send?</summary>
-      <p>STL, 3MF and OBJ get an instant price. STEP files are welcome too — we quote those by hand, usually within a few hours. Files up to 25 MB, and parts up to 256 mm on each side (bigger parts can be printed in pieces).</p>
+      <p>STL, 3MF, OBJ and STEP all get an instant price. If a file can't be read automatically, send it anyway and we'll quote it by hand, usually within a few hours. Files up to 25 MB, and parts up to 256 mm on each side (bigger parts can be printed in pieces).</p>
     </details>
     <details>
       <summary>I don't have a 3D file. Can you still help?</summary>
@@ -1275,11 +1275,8 @@ async function handleFile(file) {
   clearModel();
   render();
 
-  if (ext === 'step' || ext === 'stp') {
-    state.manual = 'step';
-    setViewerMsg('<span style="font-size:28px">⬡</span><span>STEP file received.<br>We quote these by hand — usually within a few hours.</span>');
-    render(); return;
-  }
+  const isStep = ext === 'step' || ext === 'stp';
+  if (isStep) setViewerMsg('<div class="spinner"></div><span>Reading your STEP file…<br>this can take a few seconds</span>');
 
   try {
     await nextFrame();
@@ -1290,8 +1287,13 @@ async function handleFile(file) {
     await showModel(rotated(state.positions, ORIENTS[state.analysis.orient].m));
   } catch (err) {
     console.error(err);
-    state.manual = 'unreadable';
-    setViewerMsg('<span style="font-size:28px">?</span><span>We couldn\'t read this file automatically.<br>Send it anyway — we\'ll check it and quote by hand.</span>');
+    if (isStep) {
+      state.manual = 'step';
+      setViewerMsg('<span style="font-size:28px">⬡</span><span>We couldn\'t open this STEP file here.<br>Send it anyway — we\'ll quote it by hand, usually within a few hours.</span>');
+    } else {
+      state.manual = 'unreadable';
+      setViewerMsg('<span style="font-size:28px">?</span><span>We couldn\'t read this file automatically.<br>Send it anyway — we\'ll check it and quote by hand.</span>');
+    }
   }
   render();
 }
@@ -1310,8 +1312,9 @@ let THREE = null;
 async function loadThree() { if (!THREE) THREE = await import('three'); return THREE; }
 
 async function parseFile(file, ext) {
-  await loadThree();
   const buf = await file.arrayBuffer();
+  if (ext === 'step' || ext === 'stp') return parseSTEP(buf);
+  await loadThree();
   let geoms = [];
   if (ext === 'stl') {
     const { STLLoader } = await import('three/addons/loaders/STLLoader.js');
@@ -1335,6 +1338,40 @@ async function parseFile(file, ext) {
   let off = 0;
   geoms.forEach(g => { out.set(g.attributes.position.array, off); off += g.attributes.position.array.length; g.dispose(); });
   return out;
+}
+
+// STEP: OpenCascade compiled to WebAssembly (occt-import-js, LGPL, loaded unmodified from the CDN
+// only when someone uploads a STEP file). Output is triangulated, in millimetres.
+const OCCT_URL = 'https://cdn.jsdelivr.net/npm/occt-import-js@0.0.23/dist/';
+let occtPromise = null;
+function loadOcct() {
+  if (!occtPromise) {
+    occtPromise = new Promise((resolve, reject) => {
+      const s = document.createElement('script');
+      s.src = OCCT_URL + 'occt-import-js.js';
+      s.async = true;
+      s.onload = () => window.occtimportjs({ locateFile: f => OCCT_URL + f }).then(resolve, reject);
+      s.onerror = () => reject(new Error('STEP reader failed to load'));
+      document.head.appendChild(s);
+    }).catch(e => { occtPromise = null; throw e; });
+  }
+  return occtPromise;
+}
+async function parseSTEP(buf) {
+  const occt = await loadOcct();
+  await nextFrame();
+  const r = occt.ReadStepFile(new Uint8Array(buf), { linearUnit: 'millimeter' });
+  if (!r || !r.success || !r.meshes || !r.meshes.length) throw new Error('STEP file not readable');
+  let total = 0;
+  for (const m of r.meshes) total += m.index ? m.index.array.length * 3 : m.attributes.position.array.length;
+  const out = new Float32Array(total);
+  let n = 0;
+  for (const m of r.meshes) {
+    const p = m.attributes.position.array, idx = m.index && m.index.array;
+    if (idx) for (let i = 0; i < idx.length; i++) { const k = idx[i] * 3; out[n++] = p[k]; out[n++] = p[k + 1]; out[n++] = p[k + 2]; }
+    else { out.set(p, n); n += p.length; }
+  }
+  return out.subarray(0, n);
 }
 
 // 3MF: unzip, read every .model part, follow components (incl. p:path into other parts),
