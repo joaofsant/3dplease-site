@@ -1317,6 +1317,11 @@ async function parseFile(file, ext) {
     const { STLLoader } = await import('three/addons/loaders/STLLoader.js');
     geoms = [new STLLoader().parse(buf)];
   } else if (ext === '3mf') {
+    // Own reader first: handles Bambu Studio / Orca / Prusa project files (objects split across
+    // several .model files via the 3MF Production extension), which three.js's loader can't read.
+    let pos = null;
+    try { pos = await parse3MF(buf); } catch (e) { console.warn('3MF reader:', e); }
+    if (pos && pos.length >= 9) return pos;
     const { ThreeMFLoader } = await import('three/addons/loaders/3MFLoader.js');
     geoms = geomsFromGroup(new ThreeMFLoader().parse(buf));
   } else if (ext === 'obj') {
@@ -1330,6 +1335,100 @@ async function parseFile(file, ext) {
   let off = 0;
   geoms.forEach(g => { out.set(g.attributes.position.array, off); off += g.attributes.position.array.length; g.dispose(); });
   return out;
+}
+
+// 3MF: unzip, read every .model part, follow components (incl. p:path into other parts),
+// apply build/component transforms and return flat triangle positions in mm.
+async function parse3MF(buf) {
+  const { unzipSync, strFromU8 } = await import('three/addons/libs/fflate.module.js');
+  const files = unzipSync(new Uint8Array(buf));
+  const keys = {};
+  for (const k in files) keys[k.replace(/^\/+/, '').toLowerCase()] = k;
+  const norm = p => String(p || '').replace(/^\/+/, '').toLowerCase();
+  const text = p => { const k = keys[norm(p)]; return k ? strFromU8(files[k]) : null; };
+  const PNS = 'http://schemas.microsoft.com/3dmanufacturing/production/2015/06';
+  const pathOf = el => el.getAttributeNS(PNS, 'path') || el.getAttribute('p:path');
+
+  let root = '3D/3dmodel.model';
+  const rels = text('_rels/.rels');
+  const m = rels && rels.match(/Target="([^"]+\.model)"/i);
+  if (m) root = m[1];
+
+  const parser = new DOMParser();
+  const docs = {};
+  function doc(path) {
+    const key = norm(path);
+    if (!(key in docs)) {
+      const xml = text(path);
+      if (!xml) { docs[key] = null; }
+      else {
+        const d = parser.parseFromString(xml, 'application/xml');
+        const objs = {};
+        for (const o of d.getElementsByTagNameNS('*', 'object')) objs[o.getAttribute('id')] = o;
+        docs[key] = { d, objs, meshes: {} };
+      }
+    }
+    return docs[key];
+  }
+
+  // 3MF transforms: "m00 m01 m02 m10 m11 m12 m20 m21 m22 m30 m31 m32", row vectors (p' = p·M)
+  const parseT = s => { const a = s ? s.trim().split(/\s+/).map(Number) : []; return a.length === 12 && a.every(isFinite) ? a : null; };
+  const mul = (a, b) => { // apply a, then b
+    if (!a) return b; if (!b) return a;
+    const c = new Array(12);
+    for (let i = 0; i < 4; i++) for (let j = 0; j < 3; j++) {
+      c[i * 3 + j] = a[i * 3] * b[j] + a[i * 3 + 1] * b[3 + j] + a[i * 3 + 2] * b[6 + j] + (i === 3 ? b[9 + j] : 0);
+    }
+    return c;
+  };
+
+  let out = new Float32Array(1 << 16), n = 0;
+  const grow = need => { if (n + need > out.length) { let len = out.length; while (n + need > len) len *= 2; const o = new Float32Array(len); o.set(out.subarray(0, n)); out = o; } };
+
+  function meshOf(D, id, el) {
+    if (D.meshes[id]) return D.meshes[id];
+    const vs = el.getElementsByTagNameNS('*', 'vertex'), ts = el.getElementsByTagNameNS('*', 'triangle');
+    const v = new Float64Array(vs.length * 3), t = new Uint32Array(ts.length * 3);
+    for (let i = 0; i < vs.length; i++) { const e = vs[i]; v[i * 3] = +e.getAttribute('x'); v[i * 3 + 1] = +e.getAttribute('y'); v[i * 3 + 2] = +e.getAttribute('z'); }
+    for (let i = 0; i < ts.length; i++) { const e = ts[i]; t[i * 3] = +e.getAttribute('v1'); t[i * 3 + 1] = +e.getAttribute('v2'); t[i * 3 + 2] = +e.getAttribute('v3'); }
+    return (D.meshes[id] = { v, t });
+  }
+
+  function emit(path, id, T, depth) {
+    if (depth > 20) return;
+    const D = doc(path); if (!D) return;
+    const o = D.objs[id]; if (!o) return;
+    const meshEl = o.getElementsByTagNameNS('*', 'mesh')[0];
+    if (meshEl) {
+      const { v, t } = meshOf(D, id, meshEl);
+      const nv = v.length / 3;
+      grow(t.length * 3);
+      for (let i = 0; i < t.length; i++) {
+        const k = t[i]; if (k >= nv) { n -= (i % 3) * 3; i += 2 - (i % 3); continue; } // skip broken triangle
+        const x = v[k * 3], y = v[k * 3 + 1], z = v[k * 3 + 2];
+        if (T) {
+          out[n++] = x * T[0] + y * T[3] + z * T[6] + T[9];
+          out[n++] = x * T[1] + y * T[4] + z * T[7] + T[10];
+          out[n++] = x * T[2] + y * T[5] + z * T[8] + T[11];
+        } else { out[n++] = x; out[n++] = y; out[n++] = z; }
+      }
+    }
+    for (const c of o.getElementsByTagNameNS('*', 'component')) {
+      emit(pathOf(c) || path, c.getAttribute('objectid'), mul(parseT(c.getAttribute('transform')), T), depth + 1);
+    }
+  }
+
+  const R = doc(root);
+  if (!R) throw new Error('no 3MF model part');
+  const items = R.d.getElementsByTagNameNS('*', 'item');
+  for (const it of items) emit(pathOf(it) || root, it.getAttribute('objectid'), parseT(it.getAttribute('transform')), 0);
+  if (!n) for (const id in R.objs) emit(root, id, null, 0); // no build section: take every object as is
+
+  const unit = (R.d.documentElement.getAttribute('unit') || 'millimeter').toLowerCase();
+  const scale = { micron: 0.001, millimeter: 1, centimeter: 10, inch: 25.4, foot: 304.8, meter: 1000 }[unit] || 1;
+  const res = out.slice(0, n);
+  if (scale !== 1) for (let i = 0; i < res.length; i++) res[i] *= scale;
+  return res;
 }
 
 function geomsFromGroup(group) {
