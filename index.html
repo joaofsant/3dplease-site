@@ -40,6 +40,18 @@
   function gtag(){dataLayer.push(arguments);}
   gtag('js', new Date());
   gtag('config', 'G-JWLKQWBCTT');
+  // Contact clicks: WhatsApp and phone links anywhere on the page
+  document.addEventListener('click', function (e) {
+    var a = e.target && e.target.closest ? e.target.closest('a[href]') : null;
+    if (!a) return;
+    var h = a.getAttribute('href') || '';
+    if (h.indexOf('wa.me/') !== -1) {
+      var designer = h.indexOf('designer') !== -1;
+      gtag('event', designer ? 'designer_referral_click' : 'whatsapp_click', { link_place: a.getAttribute('data-place') || 'page' });
+    } else if (h.indexOf('tel:') === 0) {
+      gtag('event', 'phone_click', { link_place: a.getAttribute('data-place') || 'page' });
+    }
+  }, true);
 </script>
 
 <script type="importmap">
@@ -496,6 +508,13 @@ nav {
 }
 .btn-ghost:hover { background: var(--paper-warm); }
 
+.phone-path {
+  margin-top: 16px; padding: 16px 18px; text-align: left;
+  border: 1px solid var(--border); border-radius: 14px; background: var(--paper);
+}
+.phone-path-title { font-size: 14px; font-weight: 600; margin-bottom: 4px; }
+.phone-path p { font-size: 13px; color: var(--muted); line-height: 1.55; margin-bottom: 12px; }
+
 /* NO FILE PANEL */
 .nofile {
   margin-top: 16px; padding: 16px 18px; text-align: left;
@@ -731,9 +750,9 @@ footer { background: var(--surface); padding: 56px 64px 32px; border-top: 1px so
 
 <section class="hero">
   <div class="hero-left">
-    <div class="hero-tag">Cork City · FDM Printing</div>
-    <h1 class="hero-title">Parts made<br>in Cork.<br><em>Next day.</em></h1>
-    <p class="hero-body">
+    <div class="hero-tag" id="heroTag">Cork City · FDM Printing</div>
+    <h1 class="hero-title" id="heroTitle">Parts made<br>in Cork.<br><em>Next day.</em></h1>
+    <p class="hero-body" id="heroBody">
       Local 3D printing for prototypes, replacement parts, and custom objects.
       Upload your file, see the price instantly, collect in Cork City or get it posted anywhere in Ireland. One-offs welcome. No nonsense.
     </p>
@@ -743,8 +762,8 @@ footer { background: var(--surface); padding: 56px 64px 32px; border-top: 1px so
     </div>
     <div class="hero-stats">
       <div class="stat">
-        <span class="stat-label">Turnaround</span>
-        <span class="stat-value">Next day</span>
+        <span class="stat-label" id="statLabel1">Turnaround</span>
+        <span class="stat-value" id="statValue1">Next day</span>
       </div>
       <div class="stat">
         <span class="stat-label">From</span>
@@ -773,9 +792,14 @@ footer { background: var(--surface); padding: 56px 64px 32px; border-top: 1px so
             <span class="dz-sub">or tap to choose<br>STL · 3MF · OBJ · STEP — up to 25 MB</span>
           </label>
           <div class="dz-points"><span>Price in seconds</span><span>Checked by a person</span><span>Revolut or bank transfer</span></div>
+          <div class="phone-path">
+            <div class="phone-path-title">On your phone, or only have a link?</div>
+            <p>Send us the file, or a link to the model, on WhatsApp. We reply with your price.</p>
+            <a class="btn-whatsapp" data-place="phone-path" href="https://wa.me/353832059510?text=Hi%2C%20I%27d%20like%20a%20price%20for%20a%203D%20print.%20Here%27s%20my%20file%20or%20link%3A" target="_blank" rel="noopener">Send a file or link on WhatsApp</a>
+          </div>
           <div class="nofile">
             <div class="nofile-title">No 3D file yet?</div>
-            <p>Most everyday parts already exist as free models. Find yours, download the STL or 3MF and drop it above.</p>
+            <p>Most everyday parts already exist as free models. Find yours, then drop the STL or 3MF above or send us the link.</p>
             <div class="nofile-links">
               <a href="https://www.printables.com/" target="_blank" rel="noopener">Printables</a>
               <a href="https://makerworld.com/" target="_blank" rel="noopener">MakerWorld</a>
@@ -948,6 +972,23 @@ footer { background: var(--surface); padding: 56px 64px 32px; border-top: 1px so
     </div>
   </div>
 </section>
+
+<script>
+// Ireland-wide version of the page (3dplease.ie/?loc=ireland): same page and prices,
+// postage message first, An Post preselected.
+(function () {
+  if (!/[?&]loc=ireland\b/.test(location.search)) return;
+  var set = function (id, html) { var el = document.getElementById(id); if (el) el.innerHTML = html; };
+  document.title = '3D Please — 3D Printing, Posted Anywhere in Ireland';
+  set('heroTag', 'Printed in Cork · Posted all over Ireland');
+  set('heroTitle', '3D prints,<br>posted anywhere<br><em>in Ireland.</em>');
+  set('heroBody', 'Upload your file and see the price in seconds. We print it in Cork and send it by An Post: €<span class="js-ship-small">5</span> for small parts, €<span class="js-ship-large">9</span> for bigger ones. Small prints are made the next day, and An Post usually delivers the working day after.');
+  set('statLabel1', 'Delivery');
+  set('statValue1', 'An Post');
+  var post = document.getElementById('d-post');
+  if (post) post.checked = true;
+})();
+</script>
 
 <section class="section" id="how">
   <div class="section-head">
@@ -1246,6 +1287,8 @@ const $ = id => document.getElementById(id);
 const form = $('quoteForm'), fileInput = $('fileInput'), dropzone = $('dropzone');
 const previewMode = !CONFIG.endpoint;
 if (previewMode) $('previewStrip').hidden = false;
+document.querySelectorAll('.js-ship-small').forEach(el => { el.textContent = CONFIG.shipping.small; });
+document.querySelectorAll('.js-ship-large').forEach(el => { el.textContent = CONFIG.shipping.large; });
 
 const state = { file: null, ext: '', positions: null, analysis: null, manual: null, quote: null };
 const track = (name, params) => { try { if (typeof gtag === 'function') gtag('event', name, params || {}); } catch (e) {} };
