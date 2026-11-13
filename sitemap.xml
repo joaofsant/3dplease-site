@@ -11,6 +11,11 @@
     <priority>0.8</priority>
   </url>
   <url>
+    <loc>https://3dplease.ie/3d-printing-county-cork</loc>
+    <lastmod>2026-11-13</lastmod>
+    <priority>0.8</priority>
+  </url>
+  <url>
     <loc>https://3dplease.ie/3d-printing-dublin</loc>
     <lastmod>2026-11-13</lastmod>
     <priority>0.8</priority>
@@ -32,6 +37,16 @@
   </url>
   <url>
     <loc>https://3dplease.ie/3d-printing-kilkenny</loc>
+    <lastmod>2026-11-13</lastmod>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://3dplease.ie/3d-printing-wexford</loc>
+    <lastmod>2026-11-13</lastmod>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://3dplease.ie/3d-printing-sligo</loc>
     <lastmod>2026-11-13</lastmod>
     <priority>0.8</priority>
   </url>

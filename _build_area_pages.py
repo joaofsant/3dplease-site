@@ -53,8 +53,9 @@ def delivery_faq(place):
     )
 
 def postage_faq(place):
+    q = "How much is postage?" if place.startswith("anywhere") else f"How much is postage to {place}?"
     return (
-        f"How much is postage to {place}?",
+        q,
         f"{POST_SMALL} if the whole order weighs up to 250 g and its longest side is up to 200 mm, {POST_LARGE} for anything bigger. The price box adds "
         "the right one, so you see the full total before you order.",
     )
@@ -102,6 +103,36 @@ PAGES = [
             ("Can I collect instead?", 'Yes, collection in Cork City centre is free. Choose "Collect in Cork" in the quote.'),
             FILES_FAQ,
             NOFILE_FAQ,
+        ],
+    },
+    {
+        "slug": "county-cork",
+        "place": "County Cork",
+        "nav_name": "County Cork",
+        "area_type": "AdministrativeArea",
+        "collect": True,
+        "title": "3D Printing County Cork — Kinsale, Cobh, Midleton | 3D Please",
+        "description": "3D printing for Kinsale, Carrigaline, Cobh, Midleton, Mallow and the rest of County Cork. Instant price, free collection in Cork City or An Post from €5.",
+        "tag": "Printed in Cork City · Collect or post",
+        "h1": "3D printing for<br><em>all of County Cork.</em>",
+        "body": f"From Kinsale to Mallow, Cobh to Clonakilty: upload your file and see the price in seconds. Collect it for free in Cork City centre, or get it posted for {POST_SMALL} (small parts) or {POST_LARGE} (bigger ones).",
+        "intro_title": "Collect on your next trip into the city, or get it posted",
+        "intro": [
+            "If you're in Cork City anyway — for work, college or shopping — choose \"Collect in Cork\" in the quote and pick it up for free. Otherwise An Post brings it to your door, usually the next working day after it's posted.",
+            "Standard prints are ready in 2–3 days, or the next day if you choose it (included for prints under 4 hours). A person checks every file before it prints.",
+        ],
+        "uses": [
+            ("Harbour towns: Cobh, Carrigaline, Kinsale", "Mounts, caps and clips for boats, bikes and outdoor gear. Choose PETG for anything that lives outside."),
+            ("East, North and West Cork", "Replacement knobs, brackets and covers for the house, the workshop or the farm in Midleton, Youghal, Mallow, Bandon or Clonakilty. Not for safety-critical or load-bearing parts."),
+            ("Students and commuters", "Studying or working in the city — UCC, MTU or an office in town? Choose collection and pick your print up on the way home."),
+        ],
+        "faq": [
+            ("Which towns do you cover?", "All of County Cork: Kinsale, Carrigaline, Cobh, Midleton, Ballincollig, Bandon, Mallow, Youghal, Clonakilty, Macroom, Fermoy, Skibbereen and everywhere in between. Any address with an Eircode."),
+            ("Can I collect instead of paying for postage?", 'Yes. Collection in Cork City centre is free. Choose "Collect in Cork" in the quote and we agree the pickup with you.'),
+            ("How long does it take?", delivery_faq("your town")[1]),
+            postage_faq("anywhere in the county"),
+            FILES_FAQ,
+            PAY_FAQ,
         ],
     },
     {
@@ -249,6 +280,64 @@ PAGES = [
             PAY_FAQ,
         ],
     },
+    {
+        "slug": "wexford",
+        "place": "Wexford",
+        "nav_name": "Wexford",
+        "area_type": "City",
+        "title": "3D Printing Wexford — Instant Price, Posted | 3D Please",
+        "description": "3D printing for Wexford, Gorey, Enniscorthy and New Ross: upload your STL, 3MF, OBJ or STEP and see the price in seconds. Posted from Cork from €5.",
+        "tag": "Printed in Cork · Posted to Wexford",
+        "h1": "3D printing for Wexford,<br><em>town and county.</em>",
+        "body": f"Upload your file and see the price in seconds. We print it in Cork and post it anywhere in County Wexford — Wexford town, Gorey, Enniscorthy, New Ross: {POST_SMALL} for small parts, {POST_LARGE} for bigger ones.",
+        "intro_title": "One price to post, from Gorey to Rosslare",
+        "intro": [
+            "Upload an STL, 3MF, OBJ or STEP file, choose PLA or PETG and a colour, and the price updates as you go. Postage is added before you order and costs the same to every address in the county.",
+            "Standard prints are ready in 2–3 days, or the next day if you choose it (included for prints under 4 hours). An Post usually delivers to Wexford the next working day. A person checks every file before it prints.",
+        ],
+        "uses": [
+            ("Boats, bikes and outdoor kit", "Clips, caps, guides and mounts for gear that lives outside. PETG copes with heat better than PLA. Not for safety-critical parts."),
+            ("House, caravan and holiday-home fixes", "Replacement knobs, hooks, covers and organisers. Most of these already exist as free models you can upload."),
+            ("Students and makers", "Project parts, enclosures and models. Upload the file from wherever you are and it comes to you by post."),
+        ],
+        "faq": [
+            delivery_faq("Wexford"),
+            postage_faq("Wexford"),
+            ("Do you post to Gorey, Enniscorthy, New Ross and Rosslare?", "Yes, anywhere in County Wexford with an Eircode, at the same price as Wexford town."),
+            collect_faq("Wexford"),
+            FILES_FAQ,
+            PAY_FAQ,
+        ],
+    },
+    {
+        "slug": "sligo",
+        "place": "Sligo",
+        "nav_name": "Sligo",
+        "area_type": "City",
+        "title": "3D Printing Sligo — Instant Price, Posted | 3D Please",
+        "description": "3D printing for Sligo: upload your STL, 3MF, OBJ or STEP and see the price in seconds. Printed in Cork, posted to Sligo by An Post from €5.",
+        "tag": "Printed in Cork · Posted to Sligo",
+        "h1": "3D printing for Sligo,<br><em>across the country.</em>",
+        "body": f"Sligo is a long way from Cork, but the postage isn't: {POST_SMALL} for small parts, {POST_LARGE} for bigger ones, anywhere in the county. Upload your file and see the price in seconds.",
+        "intro_title": "The far side of the country, the same postage",
+        "intro": [
+            "Postage is priced by the size of the parcel, not the distance, so Sligo pays the same as anywhere else. Standard prints are ready in 2–3 days, or the next day if you choose it (included for prints under 4 hours), and An Post usually delivers the next working day.",
+            "Every file is checked by a person before it prints. You pay by Revolut or bank transfer once the order is confirmed.",
+        ],
+        "uses": [
+            ("ATU Sligo projects", "Parts and enclosures for engineering and design projects at ATU Sligo. Upload the file and it comes to you by post."),
+            ("Surf, bike and camping gear", "Mounts, clips and caps for kit that lives outdoors. PETG is the better choice for anything outside."),
+            ("Replacement parts", "Knobs, brackets and covers that aren't sold any more. Find the model on Printables or MakerWorld and upload it."),
+        ],
+        "faq": [
+            delivery_faq("Sligo"),
+            postage_faq("Sligo"),
+            ("Why order from Cork if I'm in Sligo?", "You get the price on screen straight away, without emails back and forth, and the postage is the same as anywhere else in Ireland."),
+            collect_faq("Sligo"),
+            FILES_FAQ,
+            NOFILE_FAQ,
+        ],
+    },
 ]
 
 # ---------------------------------------------------------------- helpers
@@ -369,6 +458,8 @@ def build_page(p):
     intro = "\n".join(f"    <p>{esc(x)}</p>" for x in p["intro"])
     arrive = "An Post usually delivers it to your door." if place == "Ireland" else f"An Post usually delivers it in {place}."
     crumb_name = f"3D printing {place}"
+    collect_row = ('<div class="post-row"><div><b>Collect in Cork City</b><small>City centre, pickup agreed with you</small></div><span class="amt">Free</span></div>\n        '
+                   if p.get("collect") else "")
 
     return f"""<!DOCTYPE html>
 <html lang="en">
@@ -437,9 +528,9 @@ def build_page(p):
 
   <aside class="hero-right">
     <div class="card">
-      <div class="card-title"><span class="dot"></span>Delivery to {esc(to_place)}</div>
+      <div class="card-title"><span class="dot"></span>{"Collect or post" if p.get("collect") else "Delivery to " + esc(to_place)}</div>
       <div class="post-rows">
-        <div class="post-row"><div><b>Small parcel</b><small>{esc(POST_SMALL_RULE.capitalize())}</small></div><span class="amt">{POST_SMALL}</span></div>
+        {collect_row}<div class="post-row"><div><b>Small parcel</b><small>{esc(POST_SMALL_RULE.capitalize())}</small></div><span class="amt">{POST_SMALL}</span></div>
         <div class="post-row"><div><b>Bigger parcel</b><small>Anything larger or heavier</small></div><span class="amt">{POST_LARGE}</span></div>
       </div>
       <ol class="timeline">
